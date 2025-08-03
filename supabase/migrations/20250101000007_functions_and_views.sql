@@ -3,7 +3,7 @@
 
 -- Create function to get current user's restaurant context
 CREATE OR REPLACE FUNCTION get_user_restaurant_context()
-RETURNS TABLE(restaurant_id BIGINT, role VARCHAR(50)) AS $
+RETURNS TABLE(restaurant_id UUID, role VARCHAR(50)) AS $
 BEGIN
     RETURN QUERY
     SELECT ur.restaurant_id, ur.role
@@ -34,7 +34,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Create function to calculate order totals
-CREATE OR REPLACE FUNCTION calculate_order_totals(order_id_param BIGINT)
+CREATE OR REPLACE FUNCTION calculate_order_totals(order_id_param UUID)
 RETURNS TABLE(
     subtotal DECIMAL(10,2),
     tax_amount DECIMAL(10,2),

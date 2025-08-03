@@ -4,9 +4,9 @@
 -- Create orders table
 CREATE TABLE orders (
     order_id BIGSERIAL PRIMARY KEY,
-    customer_id BIGINT REFERENCES users(user_id),
-    table_id BIGINT REFERENCES tables(table_id),
-    restaurant_id BIGINT REFERENCES restaurants(restaurant_id) ON DELETE CASCADE,
+    customer_id UUID REFERENCES users(user_id),
+    table_id UUID REFERENCES tables(table_id),
+    restaurant_id UUID REFERENCES restaurants(restaurant_id) ON DELETE CASCADE,
     order_number VARCHAR(50) UNIQUE NOT NULL,
     status order_status DEFAULT 'pending',
     subtotal DECIMAL(10,2) DEFAULT 0.00,
@@ -25,7 +25,7 @@ CREATE TABLE orders (
     actual_prep_time INTEGER, -- minutes
     max_prep_time INTEGER DEFAULT 60, -- minutes
     cancellation_deadline TIMESTAMPTZ,
-    processed_by BIGINT REFERENCES users(user_id),
+    processed_by UUID REFERENCES users(user_id),
     is_total_validated BOOLEAN DEFAULT false,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
@@ -34,8 +34,8 @@ CREATE TABLE orders (
 -- Create order_items table
 CREATE TABLE order_items (
     order_item_id BIGSERIAL PRIMARY KEY,
-    order_id BIGINT REFERENCES orders(order_id) ON DELETE CASCADE,
-    item_id BIGINT REFERENCES menu_items(item_id),
+    order_id UUID REFERENCES orders(order_id) ON DELETE CASCADE,
+    item_id UUID REFERENCES menu_items(item_id),
     quantity INTEGER NOT NULL CHECK (quantity > 0),
     unit_price DECIMAL(10,2) NOT NULL,
     total_price DECIMAL(10,2) NOT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE order_items (
 
 -- Create indexes for orders and order items
 CREATE INDEX idx_orders_restaurant_id ON orders(restaurant_id);
-CREATE INDEX idx_orders_customer_id ON orders(customer_id);
+
 CREATE INDEX idx_orders_table_id ON orders(table_id);
 CREATE INDEX idx_orders_status ON orders(status);
 CREATE INDEX idx_orders_order_number ON orders(order_number);

@@ -1,11 +1,10 @@
 -- Migration 3: Tables and Menu Structure
 -- This migration creates tables for physical tables and menu organization
-
 -- Create tables table
 CREATE TABLE
     tables (
         table_id BIGSERIAL PRIMARY KEY,
-        restaurant_id BIGINT REFERENCES restaurants (restaurant_id) ON DELETE CASCADE,
+        restaurant_id UUID REFERENCES restaurants (restaurant_id) ON DELETE CASCADE,
         table_number VARCHAR(50) NOT NULL,
         qr_code_data TEXT UNIQUE,
         qr_code_url TEXT,
@@ -30,7 +29,7 @@ CREATE TABLE
 CREATE TABLE
     menu_categories (
         category_id BIGSERIAL PRIMARY KEY,
-        restaurant_id BIGINT REFERENCES restaurants (restaurant_id) ON DELETE CASCADE,
+        restaurant_id UUID REFERENCES restaurants (restaurant_id) ON DELETE CASCADE,
         name VARCHAR(255) NOT NULL,
         description TEXT,
         image_url TEXT,
@@ -46,7 +45,7 @@ CREATE TABLE
 CREATE TABLE
     menu_items (
         item_id BIGSERIAL PRIMARY KEY,
-        category_id BIGINT REFERENCES menu_categories (category_id) ON DELETE CASCADE,
+        category_id UUID REFERENCES menu_categories (category_id) ON DELETE CASCADE,
         name VARCHAR(255) NOT NULL,
         description TEXT,
         price DECIMAL(10, 2) NOT NULL CHECK (price >= 0),
@@ -74,7 +73,7 @@ CREATE INDEX idx_menu_categories_is_active ON menu_categories (is_active);
 
 CREATE INDEX idx_menu_categories_sort_order ON menu_categories (sort_order);
 
-CREATE INDEX idx_menu_items_category_id ON menu_items (category_id);
+
 
 CREATE INDEX idx_menu_items_is_available ON menu_items (is_available);
 
@@ -90,4 +89,4 @@ CREATE TRIGGER update_menu_categories_updated_at BEFORE
 UPDATE ON menu_categories FOR EACH ROW EXECUTE FUNCTION update_updated_at_column ();
 
 CREATE TRIGGER update_menu_items_updated_at BEFORE
-UPDATE ON menu_items FOR EACH ROW EXECUTE FUNCTION update_updated_at_column (); 
+UPDATE ON menu_items FOR EACH ROW EXECUTE FUNCTION update_updated_at_column ();
