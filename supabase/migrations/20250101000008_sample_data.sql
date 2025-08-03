@@ -112,19 +112,19 @@ INSERT INTO
 VALUES
     (
         'a1b2c3d4-e5f6-7890-1234-567890abcdef',
-        1,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
         'kitchen',
         'c3d4e5f6-a7b8-9012-3456-7890abcdef01'
     ),
     (
         'b2c3d4e5-f6a7-8901-2345-67890abcdef0',
-        1,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
         'waiter',
         'c3d4e5f6-a7b8-9012-3456-7890abcdef01'
     ),
     (
         'c3d4e5f6-a7b8-9012-3456-7890abcdef01',
-        1,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
         'manager',
         'a1b2c3d4-e5f6-7890-1234-567890abcdef'
     );
@@ -140,48 +140,48 @@ INSERT INTO
         status
     )
 VALUES
-    (1, 'T1', 'jhigucocina-table-1', 4, 'available'),
-    (1, 'T2', 'jhigucocina-table-2', 6, 'available'),
-    (1, 'T3', 'jhigucocina-table-3', 2, 'available'),
-    (1, 'T4', 'jhigucocina-table-4', 8, 'available'),
-    (1, 'T5', 'jhigucocina-table-5', 4, 'available');
+    ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'T1', 'jhigucocina-table-1', 4, 'available'),
+    ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'T2', 'jhigucocina-table-2', 6, 'available'),
+    ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'T3', 'jhigucocina-table-3', 2, 'available'),
+    ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'T4', 'jhigucocina-table-4', 8, 'available'),
+    ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'T5', 'jhigucocina-table-5', 4, 'available');
 
 -- Insert menu categories
 INSERT INTO
     menu_categories (restaurant_id, name, description, sort_order)
 VALUES
     (
-        1,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
         'Entradas',
         'Deliciosas entradas y aperitivos',
         1
     ),
     (
-        1,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
         'Tacos',
         'Tacos tradicionales con tortillas hechas a mano',
         2
     ),
     (
-        1,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
         'Platos Principales',
         'Platos principales de la cocina mexicana',
         3
     ),
     (
-        1,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
         'Guarniciones',
         'Acompañamientos y guarniciones',
         4
     ),
     (
-        1,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
         'Postres',
         'Postres tradicionales mexicanos',
         5
     ),
     (
-        1,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
         'Bebidas',
         'Bebidas refrescantes y tradicionales',
         6
@@ -203,7 +203,7 @@ INSERT INTO
 VALUES
     -- Entradas
     (
-        1,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a12',
         'Guacamole Fresco',
         'Aguacate fresco con tomate, cebolla, cilantro y limón',
         85.00,
@@ -214,7 +214,7 @@ VALUES
         'Ninguno'
     ),
     (
-        1,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a12',
         'Queso Fundido',
         'Queso fundido con champiñones y chorizo',
         120.00,
@@ -225,7 +225,7 @@ VALUES
         'Lácteos'
     ),
     (
-        1,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a12',
         'Sopa de Tortilla',
         'Sopa tradicional con tortillas fritas, aguacate y queso',
         95.00,
@@ -237,7 +237,7 @@ VALUES
     ),
     -- Tacos
     (
-        2,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a13',
         'Tacos al Pastor',
         'Tacos de cerdo marinado con piña y cilantro',
         45.00,
@@ -248,7 +248,7 @@ VALUES
         'Ninguno'
     ),
     (
-        2,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a13',
         'Tacos de Pescado',
         'Tacos de pescado fresco con repollo y salsa chipotle',
         55.00,
@@ -259,7 +259,7 @@ VALUES
         'Pescado'
     ),
     (
-        2,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a13',
         'Tacos de Pollo',
         'Tacos de pollo asado con guacamole',
         42.00,
@@ -271,7 +271,7 @@ VALUES
     ),
     -- Platos Principales
     (
-        3,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a14',
         'Enchiladas Verdes',
         'Enchiladas de pollo con salsa verde y crema',
         180.00,
@@ -282,7 +282,7 @@ VALUES
         'Lácteos'
     ),
     (
-        3,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a14',
         'Mole Poblano',
         'Pollo en mole poblano con arroz y frijoles',
         220.00,
@@ -293,7 +293,7 @@ VALUES
         'Nueces'
     ),
     (
-        3,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a14',
         'Chiles Rellenos',
         'Chiles poblanos rellenos de queso con salsa de tomate',
         160.00,
@@ -305,7 +305,7 @@ VALUES
     ),
     -- Guarniciones
     (
-        4,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a15',
         'Arroz Mexicano',
         'Arroz con tomate, cebolla y especias',
         45.00,
@@ -316,7 +316,7 @@ VALUES
         'Ninguno'
     ),
     (
-        4,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a15',
         'Frijoles Refritos',
         'Frijoles refritos con queso',
         35.00,
@@ -327,7 +327,7 @@ VALUES
         'Lácteos'
     ),
     (
-        4,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a15',
         'Ensalada César',
         'Ensalada César con aderezo casero',
         75.00,
@@ -339,7 +339,7 @@ VALUES
     ),
     -- Postres
     (
-        5,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a16',
         'Flan Casero',
         'Flan casero con caramelo',
         65.00,
@@ -350,7 +350,7 @@ VALUES
         'Huevos, Lácteos'
     ),
     (
-        5,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a16',
         'Churros',
         'Churros con chocolate caliente',
         55.00,
@@ -361,7 +361,7 @@ VALUES
         'Gluten'
     ),
     (
-        5,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a16',
         'Tres Leches',
         'Pastel tres leches con frutas',
         75.00,
@@ -373,7 +373,7 @@ VALUES
     ),
     -- Bebidas
     (
-        6,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a17',
         'Agua de Jamaica',
         'Agua de flor de jamaica',
         35.00,
@@ -384,7 +384,7 @@ VALUES
         'Ninguno'
     ),
     (
-        6,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a17',
         'Horchata',
         'Agua de horchata con canela',
         40.00,
@@ -395,7 +395,7 @@ VALUES
         'Ninguno'
     ),
     (
-        6,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a17',
         'Limonada',
         'Limonada fresca con menta',
         30.00,
@@ -422,8 +422,8 @@ INSERT INTO
 VALUES
     (
         'd4e5f6a7-b8c9-0123-4567-890abcdef012',
-        1,
-        1,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a18',
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
         'pending',
         0,
         0,
@@ -433,8 +433,8 @@ VALUES
     ),
     (
         'e5f6a7b8-c9d0-1234-5678-90abcdef0123',
-        2,
-        1,
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a19',
+        'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
         'accepted',
         0,
         0,
@@ -454,12 +454,12 @@ INSERT INTO
         customizations
     )
 VALUES
-    (1, 1, 1, 85.00, 85.00, '{"sin_cebolla": true}'),
-    (1, 4, 2, 45.00, 90.00, '{"extra_picante": true}'),
-    (1, 16, 1, 35.00, 35.00, NULL),
-    (2, 7, 1, 180.00, 180.00, '{"extra_crema": true}'),
-    (2, 13, 1, 45.00, 45.00, NULL),
-    (2, 18, 1, 40.00, 40.00, NULL);
+    ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a1a', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a1c', 1, 85.00, 85.00, '{"sin_cebolla": true}'),
+    ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a1a', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a1d', 2, 45.00, 90.00, '{"extra_picante": true}'),
+    ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a1a', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a1e', 1, 35.00, 35.00, NULL),
+    ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a1b', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a1f', 1, 180.00, 180.00, '{"extra_crema": true}'),
+    ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a1b', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a20', 1, 45.00, 45.00, NULL),
+    ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a1b', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a21', 1, 40.00, 40.00, NULL);
 
 -- Update order totals (trigger should handle this, but let's ensure it's correct)
 UPDATE orders
@@ -469,7 +469,7 @@ SET
     service_charge = 21.00,
     total_amount = 264.60
 WHERE
-    order_id = 1;
+    order_id = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a1a';
 
 UPDATE orders
 SET
@@ -478,4 +478,4 @@ SET
     service_charge = 26.50,
     total_amount = 333.90
 WHERE
-    order_id = 2;
+    order_id = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a1b';

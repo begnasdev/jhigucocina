@@ -3,7 +3,7 @@
 -- Create tables table
 CREATE TABLE
     tables (
-        table_id BIGSERIAL PRIMARY KEY,
+        table_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         restaurant_id UUID REFERENCES restaurants (restaurant_id) ON DELETE CASCADE,
         table_number VARCHAR(50) NOT NULL,
         qr_code_data TEXT UNIQUE,
@@ -28,7 +28,7 @@ CREATE TABLE
 -- Create menu_categories table
 CREATE TABLE
     menu_categories (
-        category_id BIGSERIAL PRIMARY KEY,
+        category_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         restaurant_id UUID REFERENCES restaurants (restaurant_id) ON DELETE CASCADE,
         name VARCHAR(255) NOT NULL,
         description TEXT,
@@ -44,7 +44,7 @@ CREATE TABLE
 -- Create menu_items table
 CREATE TABLE
     menu_items (
-        item_id BIGSERIAL PRIMARY KEY,
+        item_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         category_id UUID REFERENCES menu_categories (category_id) ON DELETE CASCADE,
         name VARCHAR(255) NOT NULL,
         description TEXT,

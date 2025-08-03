@@ -3,7 +3,7 @@
 
 -- Create restaurants table
 CREATE TABLE restaurants (
-    restaurant_id BIGSERIAL PRIMARY KEY,
+    restaurant_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(255) NOT NULL,
     address TEXT NOT NULL,
     phone VARCHAR(20),
@@ -33,7 +33,7 @@ CREATE TABLE users (
 
 -- Create user_roles table
 CREATE TABLE user_roles (
-    user_role_id BIGSERIAL PRIMARY KEY,
+    user_role_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID REFERENCES users(user_id) ON DELETE CASCADE,
     restaurant_id UUID REFERENCES restaurants(restaurant_id) ON DELETE CASCADE,
     role VARCHAR(50) NOT NULL CHECK (role IN ('owner', 'manager', 'staff', 'waiter', 'kitchen')),

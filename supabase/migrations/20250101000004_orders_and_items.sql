@@ -1,9 +1,6 @@
--- Migration 4: Orders and Order Items
--- This migration creates the core ordering system tables
-
 -- Create orders table
 CREATE TABLE orders (
-    order_id BIGSERIAL PRIMARY KEY,
+    order_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     customer_id UUID REFERENCES users(user_id),
     table_id UUID REFERENCES tables(table_id),
     restaurant_id UUID REFERENCES restaurants(restaurant_id) ON DELETE CASCADE,
@@ -33,7 +30,7 @@ CREATE TABLE orders (
 
 -- Create order_items table
 CREATE TABLE order_items (
-    order_item_id BIGSERIAL PRIMARY KEY,
+    order_item_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     order_id UUID REFERENCES orders(order_id) ON DELETE CASCADE,
     item_id UUID REFERENCES menu_items(item_id),
     quantity INTEGER NOT NULL CHECK (quantity > 0),

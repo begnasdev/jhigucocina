@@ -40,7 +40,7 @@ RETURNS TABLE(
     tax_amount DECIMAL(10,2),
     service_charge DECIMAL(10,2),
     total_amount DECIMAL(10,2)
-) AS $$
+) AS $
 DECLARE
     restaurant_tax_rate DECIMAL(5,4);
     restaurant_service_charge DECIMAL(5,4);
@@ -67,7 +67,7 @@ BEGIN
         order_subtotal * restaurant_service_charge,
         order_subtotal * (1 + restaurant_tax_rate + restaurant_service_charge);
 END;
-$$ LANGUAGE plpgsql;
+$ LANGUAGE plpgsql;
 
 -- Create helpful views
 CREATE VIEW active_orders AS

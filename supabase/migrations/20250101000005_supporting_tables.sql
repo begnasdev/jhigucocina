@@ -1,9 +1,6 @@
--- Migration 5: Supporting Tables
--- This migration creates supporting tables for notifications, QR scans, order history, and payments
-
 -- Create notifications table
 CREATE TABLE notifications (
-    notification_id BIGSERIAL PRIMARY KEY,
+    notification_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID REFERENCES users(user_id) ON DELETE CASCADE,
     order_id UUID REFERENCES orders(order_id) ON DELETE CASCADE,
     title VARCHAR(255) NOT NULL,
@@ -20,7 +17,7 @@ CREATE TABLE notifications (
 
 -- Create qr_scans table
 CREATE TABLE qr_scans (
-    scan_id BIGSERIAL PRIMARY KEY,
+    scan_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     table_id UUID REFERENCES tables(table_id) ON DELETE CASCADE,
     customer_id UUID REFERENCES users(user_id),
     session_id VARCHAR(255) UNIQUE,
@@ -38,7 +35,7 @@ CREATE TABLE qr_scans (
 
 -- Create order_status_history table
 CREATE TABLE order_status_history (
-    history_id BIGSERIAL PRIMARY KEY,
+    history_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     order_id UUID REFERENCES orders(order_id) ON DELETE CASCADE,
     updated_by UUID REFERENCES users(user_id),
     old_status order_status,
@@ -52,7 +49,7 @@ CREATE TABLE order_status_history (
 
 -- Create order_payments table
 CREATE TABLE order_payments (
-    payment_id BIGSERIAL PRIMARY KEY,
+    payment_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     order_id UUID REFERENCES orders(order_id) ON DELETE CASCADE,
     payment_method payment_method NOT NULL,
     payment_status payment_status DEFAULT 'pending',
@@ -73,7 +70,6 @@ CREATE INDEX idx_notifications_type ON notifications(type);
 CREATE INDEX idx_notifications_sent_at ON notifications(sent_at);
 CREATE INDEX idx_qr_scans_table_id ON qr_scans(table_id);
 CREATE INDEX idx_qr_scans_customer_id ON qr_scans(customer_id);
-
 CREATE INDEX idx_qr_scans_scanned_at ON qr_scans(scanned_at);
 CREATE INDEX idx_order_status_history_order_id ON order_status_history(order_id);
 CREATE INDEX idx_order_status_history_updated_at ON order_status_history(updated_at);
@@ -130,4 +126,4 @@ END;
 $$ language 'plpgsql';
 
 -- Apply notification trigger to orders table
-CREATE TRIGGER trigger_order_notifications AFTER UPDATE ON orders FOR EACH ROW EXECUTE FUNCTION create_order_notification(); 
+CREATE TRIGGER trigger_order_notifications AFTER UPDATE ON orders FOR EACH ROW EXECUTE FUNCTION create_order_notification();
