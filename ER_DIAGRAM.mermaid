@@ -1,12 +1,12 @@
 erDiagram
     RESTAURANTS {
-        int restaurant_id PK
+        uuid restaurant_id PK
         string name
-        string address
+        text address
         string phone
         string email
         text description
-        string operating_hours
+        text operating_hours
         string timezone
         decimal tax_rate
         decimal service_charge
@@ -19,7 +19,7 @@ erDiagram
     USERS {
         uuid user_id PK
         string name
-        string profile_picture
+        text profile_picture
         string phone
         boolean is_active
         datetime last_login
@@ -28,10 +28,10 @@ erDiagram
     }
 
     USER_ROLES {
-        int user_role_id PK
+        uuid user_role_id PK
         uuid user_id FK
-        int restaurant_id FK
-        string role
+        uuid restaurant_id FK
+        enum role "super_admin, manager, staff, customer"
         boolean is_active
         datetime assigned_at
         datetime expires_at
@@ -39,24 +39,26 @@ erDiagram
     }
 
     TABLES {
-        int table_id PK
-        int restaurant_id FK
+        uuid table_id PK
+        uuid restaurant_id FK
         string table_number
-        string qr_code_data
-        string qr_code_url
+        text qr_code_data
+        text qr_code_url
         int capacity
-        string status
+        enum status "available, occupied, reserved, maintenance, out_of_service"
         jsonb location_coordinates
+        boolean is_active
+        datetime last_scanned
         datetime created_at
         datetime updated_at
     }
 
     MENU_CATEGORIES {
-        int category_id PK
-        int restaurant_id FK
+        uuid category_id PK
+        uuid restaurant_id FK
         string name
         text description
-        string image_url
+        text image_url
         int sort_order
         boolean is_active
         datetime available_from
@@ -66,63 +68,70 @@ erDiagram
     }
 
     MENU_ITEMS {
-        int item_id PK
-        int category_id FK
+        uuid item_id PK
+        uuid category_id FK
         string name
         text description
         decimal price
-        string image_url
+        text image_url
         boolean is_available
         boolean is_featured
         int preparation_time
         text ingredients
         text allergens
-        text customization_options
+        jsonb customization_options
         datetime created_at
         datetime updated_at
     }
 
     ORDERS {
-        int order_id PK
+        uuid order_id PK
         uuid customer_id FK
-        int table_id FK
-        int restaurant_id FK
+        uuid table_id FK
+        uuid restaurant_id FK
         string order_number
-        string status
+        enum status "pending, accepted, preparing, ready, served, cancelled"
         decimal subtotal
         decimal tax_amount
         decimal service_charge
         decimal total_amount
+        decimal calculated_total
         text special_instructions
         datetime order_time
         datetime accepted_at
         datetime ready_at
         datetime served_at
         datetime cancelled_at
+        datetime kitchen_cutoff_time
         int estimated_prep_time
         int actual_prep_time
+        int max_prep_time
+        datetime cancellation_deadline
         uuid processed_by FK
+        boolean is_total_validated
         datetime created_at
         datetime updated_at
     }
 
     ORDER_ITEMS {
-        int order_item_id PK
-        int order_id FK
-        int item_id FK
+        uuid order_item_id PK
+        uuid order_id FK
+        uuid item_id FK
         int quantity
         decimal unit_price
         decimal total_price
-        text customizations
-        string status
+        jsonb customizations
+        enum status "pending, preparing, ready, served"
         datetime created_at
         datetime updated_at
     }
 
     NOTIFICATIONS {
-        int notification_id PK
+        uuid notification_id PK
         uuid user_id FK
-        int order_id FK
+        uuid order_id FK
+        string title
+        text message
         enum type "order_placed, order_accepted, order_preparing, order_ready, order_served, order_cancelled, system_alert"
         enum priority "low, normal, high, urgent"
         boolean is_read
@@ -134,33 +143,38 @@ erDiagram
     }
 
     QR_SCANS {
-        int scan_id PK
-        int table_id FK
+        uuid scan_id PK
+        uuid table_id FK
         uuid customer_id FK
         string session_id
-        string ip_address
-        string user_agent
+        enum session_status "active, expired, completed"
+        inet ip_address
+        text user_agent
         jsonb device_info
-        string referrer_url
+        text referrer_url
         datetime scanned_at
+        datetime expires_at
         boolean led_to_order
-        int order_id FK
+        boolean is_active_session
+        uuid order_id FK
     }
 
     ORDER_STATUS_HISTORY {
-        int history_id PK
-        int order_id FK
+        uuid history_id PK
+        uuid order_id FK
         uuid updated_by FK
         enum old_status "pending, accepted, preparing, ready, served, cancelled"
         enum new_status "pending, accepted, preparing, ready, served, cancelled"
+        boolean is_valid_progression
         text notes
+        text validation_errors
         int estimated_time
         datetime updated_at
     }
 
     ORDER_PAYMENTS {
-        int payment_id PK
-        int order_id FK
+        uuid payment_id PK
+        uuid order_id FK
         enum payment_method "cash, card, digital_wallet, other"
         enum payment_status "pending, completed, failed, refunded"
         decimal amount_paid
@@ -181,6 +195,7 @@ erDiagram
     USERS ||--o{ NOTIFICATIONS : "receives"
     USERS ||--o{ ORDER_STATUS_HISTORY : "updates"
     USERS ||--o{ QR_SCANS : "scans"
+    USERS ||--o{ ORDER_PAYMENTS : "processes"
     USER_ROLES }o--|| RESTAURANTS : "belongs_to"
     USER_ROLES }o--|| USERS : "assigned_to"
     USER_ROLES }o--o| USERS : "assigned_by"
