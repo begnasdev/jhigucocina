@@ -13,10 +13,5 @@ export const config = {
       signup: "/auth/signup",
       login: "/auth/login",
     },
-    properties: {
-      root: "/billixy/properties",
-      byId: "/billixy/properties/:id",
-      deleteImageById: "/billixy/properties/:id/image",
-    },
   },
 };
