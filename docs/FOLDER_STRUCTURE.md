@@ -8,12 +8,13 @@ This document outlines the feature-based folder structure for the JhiGuCocina re
 
 ```
 jhigucocina/
-├── app/                          # Next.js App Router
-├── components/                   # Reusable UI components (ui only)
-├── features/                     # Feature-specific components
-├── lib/                         # Utility functions and configurations
-├── hooks/                       # Custom React hooks
-├── types/                       # TypeScript type definitions
+├── src/                         # Source code directory
+│   ├── app/                     # Next.js App Router
+│   ├── components/              # Reusable UI components (ui only)
+│   ├── features/                # Feature-specific components
+│   ├── lib/                     # Utility functions and configurations
+│   ├── hooks/                   # Custom React hooks
+│   └── types/                   # TypeScript type definitions
 ├── supabase/                    # Database migrations and configurations
 ├── public/                      # Static assets
 ├── docs/                        # Documentation
@@ -28,7 +29,7 @@ jhigucocina/
 ### Authentication Routes
 
 ```
-app/
+src/app/
 ├── (auth)/                      # Route group for authentication
 │   ├── login/
 │   │   └── page.tsx            # Login page
@@ -40,7 +41,7 @@ app/
 ### Main Application Routes
 
 ```
-app/
+src/app/
 ├── (dashboard)/                 # Route group for authenticated users
 │   ├── dashboard/
 │   │   └── page.tsx            # Role-based dashboard (dynamic content)
@@ -73,7 +74,7 @@ app/
 ### UI Components
 
 ```
-components/
+src/components/
 └── ui/                          # Base UI components (shadcn/ui style)
     ├── button.tsx
     ├── input.tsx
@@ -93,7 +94,7 @@ components/
 ### Authentication Components
 
 ```
-features/
+src/features/
 ├── auth/                        # Authentication components
 │   ├── login-form.tsx
 │   ├── register-form.tsx
@@ -104,7 +105,7 @@ features/
 ### Dashboard Components
 
 ```
-features/
+src/features/
 ├── dashboard/                   # Dashboard components
 │   ├── sidebar.tsx              # Navigation sidebar
 │   ├── header.tsx               # Top header with user info
@@ -118,7 +119,7 @@ features/
 #### Restaurant Management
 
 ```
-features/
+src/features/
 ├── restaurants/                 # Restaurant management
 │   ├── restaurant-list.tsx
 │   ├── restaurant-card.tsx
@@ -130,7 +131,7 @@ features/
 #### Table Management
 
 ```
-features/
+src/features/
 ├── tables/                      # Table management
 │   ├── table-grid.tsx
 │   ├── table-card.tsx
@@ -142,7 +143,7 @@ features/
 #### Menu Management
 
 ```
-features/
+src/features/
 ├── menu/                        # Menu management
 │   ├── category-list.tsx
 │   ├── category-form.tsx
@@ -156,7 +157,7 @@ features/
 #### Order Management
 
 ```
-features/
+src/features/
 ├── orders/                      # Order management
 │   ├── order-list.tsx
 │   ├── order-card.tsx
@@ -170,7 +171,7 @@ features/
 #### Staff Management
 
 ```
-features/
+src/features/
 ├── staff/                       # Staff management
 │   ├── staff-list.tsx
 │   ├── staff-card.tsx
@@ -182,7 +183,7 @@ features/
 #### User Management
 
 ```
-features/
+src/features/
 ├── users/                       # User management
 │   ├── user-list.tsx
 │   ├── user-card.tsx
@@ -194,7 +195,7 @@ features/
 #### QR Scanner
 
 ```
-features/
+src/features/
 ├── qr-scanner/                  # QR scanner
 │   ├── scanner.tsx
 │   ├── qr-generator.tsx
@@ -205,7 +206,7 @@ features/
 ## Lib Directory Structure
 
 ```
-lib/
+src/lib/
 ├── auth.ts                      # Authentication utilities
 ├── supabase.ts                  # Supabase client configuration
 ├── utils.ts                     # General utility functions
@@ -219,7 +220,7 @@ lib/
 ## Hooks Directory Structure
 
 ```
-hooks/
+src/hooks/
 ├── use-auth.ts                  # Authentication hook
 ├── use-role.ts                  # Role management hook
 ├── use-restaurant.ts            # Restaurant data hook
@@ -235,7 +236,7 @@ hooks/
 ## Types Directory Structure
 
 ```
-types/
+src/types/
 ├── auth.ts                      # Authentication types
 ├── restaurant.ts                # Restaurant-related types
 ├── order.ts                     # Order-related types
