@@ -3,23 +3,38 @@
 
 -- Create function to get current user's restaurant context
 CREATE OR REPLACE FUNCTION get_user_restaurant_context()
-RETURNS TABLE(restaurant_id UUID, role VARCHAR(50)) AS $
+RETURNS TABLE(restaurant_id UUID, role VARCHAR(50)) 
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
 BEGIN
+    SET search_path = '';
     RETURN QUERY
     SELECT ur.restaurant_id, ur.role
     FROM user_roles ur
-    WHERE ur.user_id = auth.uid()
+    WHERE ur.user_id = (SELECT auth.uid())
     LIMIT 1;
+EXCEPTION 
+    WHEN NO_DATA_FOUND THEN
+        RETURN QUERY SELECT NULL::UUID, NULL::VARCHAR(50);
 END;
-$ LANGUAGE plpgsql SECURITY DEFINER;
+$$;
 
 -- Create function to validate order status progression
 CREATE OR REPLACE FUNCTION validate_order_status_progression(
     old_status order_status,
     new_status order_status
 )
-RETURNS BOOLEAN AS $$
+RETURNS BOOLEAN 
+LANGUAGE plpgsql
+SECURITY INVOKER
+AS $$
 BEGIN
+    -- Validate input statuses are not null
+    IF old_status IS NULL OR new_status IS NULL THEN
+        RETURN false;
+    END IF;
+
     -- Define valid status progressions
     RETURN CASE 
         WHEN old_status = 'pending' AND new_status IN ('accepted', 'cancelled') THEN true
@@ -31,7 +46,7 @@ BEGIN
         ELSE false
     END;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 -- Create function to calculate order totals
 CREATE OR REPLACE FUNCTION calculate_order_totals(order_id_param UUID)
@@ -40,14 +55,24 @@ RETURNS TABLE(
     tax_amount DECIMAL(10,2),
     service_charge DECIMAL(10,2),
     total_amount DECIMAL(10,2)
-) AS $
+) 
+LANGUAGE plpgsql
+SECURITY INVOKER
+AS $$
 DECLARE
-    restaurant_tax_rate DECIMAL(5,4);
-    restaurant_service_charge DECIMAL(5,4);
-    order_subtotal DECIMAL(10,2);
+    restaurant_tax_rate DECIMAL(5,4) := 0;
+    restaurant_service_charge DECIMAL(5,4) := 0;
+    order_subtotal DECIMAL(10,2) := 0;
 BEGIN
+    -- Validate input
+    IF order_id_param IS NULL THEN
+        RETURN QUERY 
+        SELECT 0::DECIMAL(10,2), 0::DECIMAL(10,2), 0::DECIMAL(10,2), 0::DECIMAL(10,2);
+        RETURN;
+    END IF;
+
     -- Get restaurant rates
-    SELECT r.tax_rate, r.service_charge
+    SELECT COALESCE(r.tax_rate, 0), COALESCE(r.service_charge, 0)
     INTO restaurant_tax_rate, restaurant_service_charge
     FROM orders o
     JOIN restaurants r ON o.restaurant_id = r.restaurant_id
@@ -63,44 +88,11 @@ BEGIN
     RETURN QUERY
     SELECT 
         order_subtotal,
-        order_subtotal * restaurant_tax_rate,
-        order_subtotal * restaurant_service_charge,
-        order_subtotal * (1 + restaurant_tax_rate + restaurant_service_charge);
+        ROUND(order_subtotal * restaurant_tax_rate, 2),
+        ROUND(order_subtotal * restaurant_service_charge, 2),
+        ROUND(order_subtotal * (1 + restaurant_tax_rate + restaurant_service_charge), 2);
 END;
-$ LANGUAGE plpgsql;
-
--- Create helpful views
-CREATE VIEW active_orders AS
-SELECT 
-    o.*,
-    r.name as restaurant_name,
-    t.table_number,
-    u.name as customer_name,
-    u.email as customer_email
-FROM orders o
-JOIN restaurants r ON o.restaurant_id = r.restaurant_id
-LEFT JOIN tables t ON o.table_id = t.table_id
-LEFT JOIN users u ON o.customer_id = u.user_id
-WHERE o.status NOT IN ('served', 'cancelled')
-AND r.is_active = true;
-
-CREATE VIEW order_summary AS
-SELECT 
-    o.order_id,
-    o.order_number,
-    o.status,
-    o.total_amount,
-    o.order_time,
-    r.name as restaurant_name,
-    t.table_number,
-    u.name as customer_name,
-    COUNT(oi.order_item_id) as item_count
-FROM orders o
-JOIN restaurants r ON o.restaurant_id = r.restaurant_id
-LEFT JOIN tables t ON o.table_id = t.table_id
-LEFT JOIN users u ON o.customer_id = u.user_id
-LEFT JOIN order_items oi ON o.order_id = oi.order_id
-GROUP BY o.order_id, o.order_number, o.status, o.total_amount, o.order_time, r.name, t.table_number, u.name;
+$$;
 
 -- Grant necessary permissions
 GRANT USAGE ON SCHEMA public TO anon, authenticated;

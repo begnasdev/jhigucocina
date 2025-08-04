@@ -1,6 +1,5 @@
 -- Migration 6: Row Level Security (RLS) Policies
 -- This migration enables RLS and creates security policies for all tables
-
 -- Enable Row Level Security (RLS) on all tables
 ALTER TABLE restaurants ENABLE ROW LEVEL SECURITY;
 
@@ -39,7 +38,9 @@ SELECT
                 user_roles.restaurant_id = restaurants.restaurant_id
                 AND user_roles.user_id = auth.uid ()
         )
-    );;
+    );
+
+;
 
 -- Create RLS policies for users
 CREATE POLICY "Users can view own profile" ON users FOR
@@ -305,4 +306,4 @@ UPDATE USING (
             AND ur.user_id = auth.uid ()
             AND ur.is_active = true
     )
-); 
+);

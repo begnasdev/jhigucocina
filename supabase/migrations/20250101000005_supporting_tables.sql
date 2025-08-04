@@ -21,7 +21,7 @@ CREATE TABLE qr_scans (
     table_id UUID REFERENCES tables(table_id) ON DELETE CASCADE,
     customer_id UUID REFERENCES users(user_id),
     session_id VARCHAR(255) UNIQUE,
-    session_status VARCHAR(50) DEFAULT 'active' CHECK (session_status IN ('active', 'expired', 'completed')),
+    session_status session_status DEFAULT 'active',
     ip_address INET,
     user_agent TEXT,
     device_info JSONB,

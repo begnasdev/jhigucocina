@@ -3,20 +3,13 @@
 -- Create tables table
 CREATE TABLE
     tables (
-        table_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+        table_id UUID PRIMARY KEY DEFAULT uuid_generate_v4 (),
         restaurant_id UUID REFERENCES restaurants (restaurant_id) ON DELETE CASCADE,
         table_number VARCHAR(50) NOT NULL,
         qr_code_data TEXT UNIQUE,
         qr_code_url TEXT,
         capacity INTEGER DEFAULT 4,
-        status VARCHAR(50) DEFAULT 'available' CHECK (
-            status IN (
-                'available',
-                'occupied',
-                'reserved',
-                'maintenance'
-            )
-        ),
+        status table_status DEFAULT 'available',
         location_coordinates JSONB,
         is_active BOOLEAN DEFAULT true,
         last_scanned TIMESTAMPTZ,
@@ -28,7 +21,7 @@ CREATE TABLE
 -- Create menu_categories table
 CREATE TABLE
     menu_categories (
-        category_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+        category_id UUID PRIMARY KEY DEFAULT uuid_generate_v4 (),
         restaurant_id UUID REFERENCES restaurants (restaurant_id) ON DELETE CASCADE,
         name VARCHAR(255) NOT NULL,
         description TEXT,
@@ -44,7 +37,7 @@ CREATE TABLE
 -- Create menu_items table
 CREATE TABLE
     menu_items (
-        item_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+        item_id UUID PRIMARY KEY DEFAULT uuid_generate_v4 (),
         category_id UUID REFERENCES menu_categories (category_id) ON DELETE CASCADE,
         name VARCHAR(255) NOT NULL,
         description TEXT,
@@ -72,8 +65,6 @@ CREATE INDEX idx_menu_categories_restaurant_id ON menu_categories (restaurant_id
 CREATE INDEX idx_menu_categories_is_active ON menu_categories (is_active);
 
 CREATE INDEX idx_menu_categories_sort_order ON menu_categories (sort_order);
-
-
 
 CREATE INDEX idx_menu_items_is_available ON menu_items (is_available);
 
