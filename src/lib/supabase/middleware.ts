@@ -1,3 +1,4 @@
+import type { Database } from "@/types/database";
 import { config } from "@/config";
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
@@ -7,7 +8,7 @@ export async function updateSession(request: NextRequest) {
     request,
   });
 
-  const supabase = createServerClient(
+  const supabase = createServerClient<Database>(
     config.supabase.url!,
     config.supabase.anonKey!,
     {
@@ -36,12 +37,12 @@ export async function updateSession(request: NextRequest) {
 
   // IMPORTANT: DO NOT REMOVE auth.getUser()
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: claims } = await supabase.auth.getClaims();
+
+  console.log("claims", claims);
 
   if (
-    !user &&
+    !claims &&
     !request.nextUrl.pathname.startsWith("/login") &&
     !request.nextUrl.pathname.startsWith("/signup")
   ) {
@@ -53,7 +54,7 @@ export async function updateSession(request: NextRequest) {
 
   // Prevent authenticated users from accessing login/signup pages
   if (
-    user &&
+    claims &&
     (request.nextUrl.pathname.startsWith("/login") ||
       request.nextUrl.pathname.startsWith("/signup") ||
       request.nextUrl.pathname === "/")
