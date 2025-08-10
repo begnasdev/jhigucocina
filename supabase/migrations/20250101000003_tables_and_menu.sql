@@ -38,7 +38,6 @@ CREATE TABLE
 CREATE TABLE
     menu_items (
         item_id UUID PRIMARY KEY DEFAULT uuid_generate_v4 (),
-        category_id UUID REFERENCES menu_categories (category_id) ON DELETE CASCADE,
         name VARCHAR(255) NOT NULL,
         description TEXT,
         price DECIMAL(10, 2) NOT NULL CHECK (price >= 0),
@@ -52,6 +51,26 @@ CREATE TABLE
         created_at TIMESTAMPTZ DEFAULT NOW (),
         updated_at TIMESTAMPTZ DEFAULT NOW ()
     );
+
+-- Create menu_item_categories join table for many-to-many relationship
+CREATE TABLE "menu_item_categories" (
+    "menu_item_id" uuid NOT NULL,
+    "category_id" uuid NOT NULL,
+    PRIMARY KEY ("menu_item_id", "category_id")
+);
+
+-- Add foreign key constraints to the join table
+ALTER TABLE "menu_item_categories" 
+ADD CONSTRAINT "fk_menu_item" 
+FOREIGN KEY ("menu_item_id") 
+REFERENCES "menu_items" ("item_id") 
+ON DELETE CASCADE;
+
+ALTER TABLE "menu_item_categories" 
+ADD CONSTRAINT "fk_category" 
+FOREIGN KEY ("category_id") 
+REFERENCES "menu_categories" ("category_id") 
+ON DELETE CASCADE;
 
 -- Create indexes for tables and menu
 CREATE INDEX idx_tables_restaurant_id ON tables (restaurant_id);
@@ -70,8 +89,6 @@ CREATE INDEX idx_menu_items_is_available ON menu_items (is_available);
 
 CREATE INDEX idx_menu_items_is_featured ON menu_items (is_featured);
 
-CREATE INDEX idx_menu_items_category_available ON menu_items (category_id, is_available);
-
 -- Apply updated_at triggers
 CREATE TRIGGER update_tables_updated_at BEFORE
 UPDATE ON tables FOR EACH ROW EXECUTE FUNCTION update_updated_at_column ();
@@ -81,3 +98,18 @@ UPDATE ON menu_categories FOR EACH ROW EXECUTE FUNCTION update_updated_at_column
 
 CREATE TRIGGER update_menu_items_updated_at BEFORE
 UPDATE ON menu_items FOR EACH ROW EXECUTE FUNCTION update_updated_at_column ();
+
+-- Add diet type tables
+CREATE TABLE "diet_type" (
+    "diet_type_id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    "name" character varying(255) NOT NULL
+);
+
+CREATE TABLE "menu_item_diet_types" (
+    "menu_item_id" uuid NOT NULL,
+    "diet_type_id" uuid NOT NULL,
+    PRIMARY KEY ("menu_item_id", "diet_type_id")
+);
+
+ALTER TABLE "menu_item_diet_types" ADD FOREIGN KEY ("menu_item_id") REFERENCES "menu_items" ("item_id") ON DELETE CASCADE;
+ALTER TABLE "menu_item_diet_types" ADD FOREIGN KEY ("diet_type_id") REFERENCES "diet_type" ("diet_type_id") ON DELETE CASCADE;

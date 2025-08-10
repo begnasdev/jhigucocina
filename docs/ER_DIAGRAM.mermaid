@@ -69,7 +69,6 @@ erDiagram
 
     MENU_ITEMS {
         uuid item_id PK
-        uuid category_id FK
         string name
         text description
         decimal price
@@ -82,6 +81,11 @@ erDiagram
         jsonb customization_options
         datetime created_at
         datetime updated_at
+    }
+
+    MENU_ITEM_CATEGORIES {
+        uuid menu_item_id PK, FK
+        uuid category_id PK, FK
     }
 
     ORDERS {
@@ -186,6 +190,16 @@ erDiagram
         datetime updated_at
     }
 
+    DIET_TYPE {
+        uuid diet_type_id PK
+        string name
+    }
+
+    MENU_ITEM_DIET_TYPES {
+        uuid menu_item_id PK, FK
+        uuid diet_type_id PK, FK
+    }
+
     RESTAURANTS ||--o{ USER_ROLES : "employs"
     RESTAURANTS ||--o{ TABLES : "has"
     RESTAURANTS ||--o{ MENU_CATEGORIES : "contains"
@@ -203,7 +217,8 @@ erDiagram
     TABLES ||--o{ ORDERS : "serves"
     TABLES ||--o{ QR_SCANS : "generates"
     MENU_CATEGORIES }o--|| RESTAURANTS : "belongs_to"
-    MENU_CATEGORIES ||--o{ MENU_ITEMS : "categorizes"
+    MENU_CATEGORIES ||--|{ MENU_ITEM_CATEGORIES : "groups"
+    MENU_ITEMS ||--|{ MENU_ITEM_CATEGORIES : "belongs to"
     ORDERS }o--|| USERS : "placed_by"
     ORDERS }o--|| TABLES : "served_at"
     ORDERS }o--|| RESTAURANTS : "belongs_to"
@@ -224,3 +239,5 @@ erDiagram
     ORDER_STATUS_HISTORY }o--|| USERS : "updated_by"
     ORDER_PAYMENTS }o--|| ORDERS : "pays_for"
     ORDER_PAYMENTS }o--|| USERS : "processed_by"
+    MENU_ITEMS ||--|{ MENU_ITEM_DIET_TYPES : "has"
+    DIET_TYPE ||--|{ MENU_ITEM_DIET_TYPES : "applies to"

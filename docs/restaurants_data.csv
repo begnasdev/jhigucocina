@@ -1,0 +1,2 @@
+name,address,phone,email,description,operating_hours,timezone,tax_rate,service_charge,currency,is_active
+"Jhigu Cocina","Kritipur","","jhigucocina@gmail.com","A fine dining experience with a modern twist on classic nepali cuisine","","Asia/Kathmandu",0.13,0.10,"NPR",true

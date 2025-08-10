@@ -117,15 +117,13 @@ CREATE POLICY "Users can view menu items in their restaurants" ON menu_items FOR
 SELECT
     USING (
         EXISTS (
-            SELECT
-                1
-            FROM
-                user_roles ur
-                JOIN menu_categories mc ON ur.restaurant_id = mc.restaurant_id
-            WHERE
-                mc.category_id = menu_items.category_id
-                AND ur.user_id = auth.uid ()
-                AND ur.is_active = true
+            SELECT 1
+            FROM user_roles ur
+            JOIN menu_categories mc ON ur.restaurant_id = mc.restaurant_id
+            JOIN menu_item_categories mic ON mc.category_id = mic.category_id
+            WHERE mic.menu_item_id = menu_items.item_id
+              AND ur.user_id = auth.uid()
+              AND ur.is_active = true
         )
     );
 
@@ -305,5 +303,117 @@ UPDATE USING (
             o.order_id = order_items.order_id
             AND ur.user_id = auth.uid ()
             AND ur.is_active = true
+    )
+);
+
+-- Add RLS policies for diet tables
+-- Enable Row Level Security for diet_type and menu_item_diet_types
+ALTER TABLE diet_type ENABLE ROW LEVEL SECURITY;
+ALTER TABLE menu_item_diet_types ENABLE ROW LEVEL SECURITY;
+
+-- RLS Policies for menu_item_categories table
+ALTER TABLE menu_item_categories ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow all authenticated users to view menu item categories"
+ON menu_item_categories
+FOR SELECT
+TO authenticated
+USING (true);
+
+CREATE POLICY "Allow managers and super_admins to manage menu item categories"
+ON menu_item_categories
+FOR ALL
+USING (
+    EXISTS (
+        SELECT 1
+        FROM user_roles
+        WHERE user_roles.user_id = auth.uid()
+        AND user_roles.role IN ('manager', 'super_admin')
+    )
+);
+
+-- RLS Policies for diet_type table
+CREATE POLICY "Allow all authenticated users to view diet types"
+ON diet_type
+FOR SELECT
+TO authenticated
+USING (true);
+
+CREATE POLICY "Allow managers and super_admins to insert diet types"
+ON diet_type
+FOR INSERT
+WITH CHECK (
+    EXISTS (
+        SELECT 1
+        FROM user_roles
+        WHERE user_roles.user_id = auth.uid()
+        AND user_roles.role IN ('manager', 'super_admin')
+    )
+);
+
+CREATE POLICY "Allow managers and super_admins to update diet types"
+ON diet_type
+FOR UPDATE
+USING (
+    EXISTS (
+        SELECT 1
+        FROM user_roles
+        WHERE user_roles.user_id = auth.uid()
+        AND user_roles.role IN ('manager', 'super_admin')
+    )
+);
+
+CREATE POLICY "Allow managers and super_admins to delete diet types"
+ON diet_type
+FOR DELETE
+USING (
+    EXISTS (
+        SELECT 1
+        FROM user_roles
+        WHERE user_roles.user_id = auth.uid()
+        AND user_roles.role IN ('manager', 'super_admin')
+    )
+);
+
+-- RLS Policies for menu_item_diet_types table
+CREATE POLICY "Allow all authenticated users to view menu item diet types"
+ON menu_item_diet_types
+FOR SELECT
+TO authenticated
+USING (true);
+
+CREATE POLICY "Allow managers and super_admins to insert menu item diet types"
+ON menu_item_diet_types
+FOR INSERT
+WITH CHECK (
+    EXISTS (
+        SELECT 1
+        FROM user_roles
+        WHERE user_roles.user_id = auth.uid()
+        AND user_roles.role IN ('manager', 'super_admin')
+    )
+);
+
+CREATE POLICY "Allow managers and super_admins to update menu item diet types"
+ON menu_item_diet_types
+FOR UPDATE
+USING (
+    EXISTS (
+        SELECT 1
+        FROM user_roles
+        WHERE user_roles.user_id = auth.uid()
+        AND user_roles.role IN ('manager', 'super_admin')
+    )
+);
+
+CREATE POLICY "Allow managers and super_admins to delete menu item diet types"
+ON menu_item_diet_types
+FOR DELETE
+USING (
+    EXISTS (
+        SELECT 1
+        FROM user_roles
+        WHERE user_roles.user_id = auth.uid()
+        AND user_roles.role IN ('manager', 'super_admin')
     )
 );
