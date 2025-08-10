@@ -40,6 +40,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      applied_promotions: {
+        Row: {
+          applied_promotion_id: string
+          discount_amount: number
+          order_id: string
+          promotion_id: string
+        }
+        Insert: {
+          applied_promotion_id?: string
+          discount_amount: number
+          order_id: string
+          promotion_id: string
+        }
+        Update: {
+          applied_promotion_id?: string
+          discount_amount?: number
+          order_id?: string
+          promotion_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "applied_promotions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["order_id"]
+          },
+          {
+            foreignKeyName: "applied_promotions_promotion_id_fkey"
+            columns: ["promotion_id"]
+            isOneToOne: false
+            referencedRelation: "promotions"
+            referencedColumns: ["promotion_id"]
+          },
+        ]
+      }
       diet_type: {
         Row: {
           diet_type_id: string
@@ -554,6 +590,83 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "tables"
             referencedColumns: ["table_id"]
+          },
+        ]
+      }
+      promotion_categories: {
+        Row: {
+          category_id: string
+          promotion_id: string
+        }
+        Insert: {
+          category_id: string
+          promotion_id: string
+        }
+        Update: {
+          category_id?: string
+          promotion_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "promotion_categories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "menu_categories"
+            referencedColumns: ["category_id"]
+          },
+          {
+            foreignKeyName: "promotion_categories_promotion_id_fkey"
+            columns: ["promotion_id"]
+            isOneToOne: false
+            referencedRelation: "promotions"
+            referencedColumns: ["promotion_id"]
+          },
+        ]
+      }
+      promotions: {
+        Row: {
+          description: string | null
+          end_date: string
+          is_active: boolean | null
+          name: string
+          promotion_id: string
+          restaurant_id: string
+          start_date: string
+          type: string
+          value: number
+          voucher_code: string | null
+        }
+        Insert: {
+          description?: string | null
+          end_date: string
+          is_active?: boolean | null
+          name: string
+          promotion_id?: string
+          restaurant_id: string
+          start_date: string
+          type: string
+          value: number
+          voucher_code?: string | null
+        }
+        Update: {
+          description?: string | null
+          end_date?: string
+          is_active?: boolean | null
+          name?: string
+          promotion_id?: string
+          restaurant_id?: string
+          start_date?: string
+          type?: string
+          value?: number
+          voucher_code?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "promotions_restaurant_id_fkey"
+            columns: ["restaurant_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
+            referencedColumns: ["restaurant_id"]
           },
         ]
       }

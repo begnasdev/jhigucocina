@@ -417,3 +417,90 @@ USING (
         AND user_roles.role IN ('manager', 'super_admin')
     )
 );
+
+-- RLS Policies for promotions tables
+ALTER TABLE promotions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE applied_promotions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE promotion_categories ENABLE ROW LEVEL SECURITY;
+
+-- Policies for promotions table
+CREATE POLICY "Allow public view of all promotions"
+ON promotions
+FOR SELECT
+TO authenticated
+USING (is_active = true);
+
+CREATE POLICY "Allow managers and super_admins to manage promotions"
+ON promotions
+FOR ALL
+USING (
+    EXISTS (
+        SELECT 1
+        FROM user_roles
+        WHERE user_roles.user_id = auth.uid()
+        AND user_roles.restaurant_id = promotions.restaurant_id
+        AND user_roles.role IN ('manager', 'super_admin')
+    )
+);
+
+-- Policies for applied_promotions table
+CREATE POLICY "Allow staff and customers to view their applied promotions"
+ON applied_promotions
+FOR SELECT
+USING (
+    EXISTS (
+        SELECT 1
+        FROM orders o
+        JOIN user_roles ur ON o.restaurant_id = ur.restaurant_id
+        WHERE o.order_id = applied_promotions.order_id
+        AND ur.user_id = auth.uid()
+    )
+    OR
+    EXISTS (
+        SELECT 1
+        FROM orders o
+        WHERE o.order_id = applied_promotions.order_id
+        AND o.customer_id = auth.uid()
+    )
+);
+
+CREATE POLICY "Allow staff and customers to create applied promotions"
+ON applied_promotions
+FOR INSERT
+WITH CHECK (
+    EXISTS (
+        SELECT 1
+        FROM orders o
+        JOIN user_roles ur ON o.restaurant_id = ur.restaurant_id
+        WHERE o.order_id = applied_promotions.order_id
+        AND ur.user_id = auth.uid()
+    )
+    OR
+    EXISTS (
+        SELECT 1
+        FROM orders o
+        WHERE o.order_id = applied_promotions.order_id
+        AND o.customer_id = auth.uid()
+    )
+);
+
+-- Policies for promotion_categories table
+CREATE POLICY "Allow public view of all promotion categories"
+ON promotion_categories
+FOR SELECT
+TO authenticated
+USING (true);
+
+CREATE POLICY "Allow managers and super_admins to manage promotion categories"
+ON promotion_categories
+FOR ALL
+USING (
+    EXISTS (
+        SELECT 1
+        FROM promotions p
+        JOIN user_roles ur ON p.restaurant_id = ur.restaurant_id
+        WHERE p.promotion_id = promotion_categories.promotion_id
+        AND ur.user_id = auth.uid()
+        AND ur.role IN ('manager', 'super_admin')
+    )
+);

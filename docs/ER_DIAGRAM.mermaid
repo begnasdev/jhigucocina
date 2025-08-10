@@ -200,10 +200,36 @@ erDiagram
         uuid diet_type_id PK, FK
     }
 
+    PROMOTIONS {
+        uuid promotion_id PK
+        uuid restaurant_id FK
+        string name
+        text description
+        string type
+        decimal value
+        datetime start_date
+        datetime end_date
+        string voucher_code
+        boolean is_active
+    }
+
+    APPLIED_PROMOTIONS {
+        uuid applied_promotion_id PK
+        uuid order_id FK
+        uuid promotion_id FK
+        decimal discount_amount
+    }
+
+    PROMOTION_CATEGORIES {
+        uuid promotion_id PK, FK
+        uuid category_id PK, FK
+    }
+
     RESTAURANTS ||--o{ USER_ROLES : "employs"
     RESTAURANTS ||--o{ TABLES : "has"
     RESTAURANTS ||--o{ MENU_CATEGORIES : "contains"
     RESTAURANTS ||--o{ ORDERS : "receives"
+    RESTAURANTS ||--o{ PROMOTIONS : "offers"
     USERS ||--o{ USER_ROLES : "assigned"
     USERS ||--o{ ORDERS : "places"
     USERS ||--o{ NOTIFICATIONS : "receives"
@@ -218,6 +244,7 @@ erDiagram
     TABLES ||--o{ QR_SCANS : "generates"
     MENU_CATEGORIES }o--|| RESTAURANTS : "belongs_to"
     MENU_CATEGORIES ||--|{ MENU_ITEM_CATEGORIES : "groups"
+    MENU_CATEGORIES ||--|{ PROMOTION_CATEGORIES : "targeted by"
     MENU_ITEMS ||--|{ MENU_ITEM_CATEGORIES : "belongs to"
     ORDERS }o--|| USERS : "placed_by"
     ORDERS }o--|| TABLES : "served_at"
@@ -228,6 +255,7 @@ erDiagram
     ORDERS ||--o{ ORDER_STATUS_HISTORY : "tracks"
     ORDERS ||--o{ ORDER_PAYMENTS : "paid_by"
     ORDERS ||--o{ QR_SCANS : "resulted_from"
+    ORDERS ||--o{ APPLIED_PROMOTIONS : "has"
     ORDER_ITEMS }o--|| ORDERS : "belongs_to"
     ORDER_ITEMS }o--|| MENU_ITEMS : "references"
     NOTIFICATIONS }o--|| USERS : "sent_to"
@@ -241,3 +269,5 @@ erDiagram
     ORDER_PAYMENTS }o--|| USERS : "processed_by"
     MENU_ITEMS ||--|{ MENU_ITEM_DIET_TYPES : "has"
     DIET_TYPE ||--|{ MENU_ITEM_DIET_TYPES : "applies to"
+    PROMOTIONS ||--|{ APPLIED_PROMOTIONS : "used in"
+    PROMOTIONS ||--|{ PROMOTION_CATEGORIES : "targets"

@@ -62,6 +62,36 @@ CREATE TABLE order_payments (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Create promotions table
+CREATE TABLE promotions (
+    promotion_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    restaurant_id UUID REFERENCES restaurants(restaurant_id) ON DELETE CASCADE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    type VARCHAR(50) NOT NULL, -- e.g., 'PERCENTAGE', 'FIXED_AMOUNT', 'BOGO', 'FREE_ITEM'
+    value DECIMAL(10, 2) NOT NULL,
+    start_date TIMESTAMPTZ NOT NULL,
+    end_date TIMESTAMPTZ NOT NULL,
+    voucher_code VARCHAR(50) UNIQUE,
+    is_active BOOLEAN DEFAULT true
+);
+
+-- Create applied_promotions table
+CREATE TABLE applied_promotions (
+    applied_promotion_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    order_id UUID REFERENCES orders(order_id) ON DELETE CASCADE NOT NULL,
+    promotion_id UUID REFERENCES promotions(promotion_id) ON DELETE CASCADE NOT NULL,
+    discount_amount DECIMAL(10, 2) NOT NULL
+);
+
+-- Create promotion_categories table
+CREATE TABLE promotion_categories (
+    promotion_id UUID REFERENCES promotions(promotion_id) ON DELETE CASCADE NOT NULL,
+    category_id UUID REFERENCES menu_categories(category_id) ON DELETE CASCADE NOT NULL,
+    PRIMARY KEY (promotion_id, category_id)
+);
+
+
 -- Create indexes for supporting tables
 CREATE INDEX idx_notifications_user_id ON notifications(user_id);
 CREATE INDEX idx_notifications_order_id ON notifications(order_id);
@@ -75,6 +105,11 @@ CREATE INDEX idx_order_status_history_order_id ON order_status_history(order_id)
 CREATE INDEX idx_order_status_history_updated_at ON order_status_history(updated_at);
 CREATE INDEX idx_order_payments_order_id ON order_payments(order_id);
 CREATE INDEX idx_order_payments_payment_status ON order_payments(payment_status);
+CREATE INDEX idx_promotions_restaurant_id ON promotions(restaurant_id);
+CREATE INDEX idx_promotions_voucher_code ON promotions(voucher_code);
+CREATE INDEX idx_applied_promotions_order_id ON applied_promotions(order_id);
+CREATE INDEX idx_applied_promotions_promotion_id ON applied_promotions(promotion_id);
+
 
 -- Apply updated_at triggers
 CREATE TRIGGER update_order_payments_updated_at BEFORE UPDATE ON order_payments FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
