@@ -20,3 +20,34 @@ This is a **DANGEROUS and IRREVERSIBLE** command that resets both your **local**
 You should only use this command in the very early stages of development when you want to completely start over from a clean slate on both your local and remote environments.
 
 **DO NOT** run this command if you have any valuable data, files, or schema in your remote database that you want to keep. There is no "undo" button.
+
+## `supabase gen types`
+
+This command generates TypeScript definitions from your database schema, which is essential for type-safe database queries in your application.
+
+### Generating Types from Local Database
+
+Use this command when you are developing locally and want to generate types from your local Supabase instance (running in Docker).
+
+**Command:**
+```bash
+supabase gen types typescript --local > src/types/database.ts
+```
+
+**Prerequisites:**
+*   Docker Desktop must be running.
+*   Your local Supabase instance must be started (e.g., via `supabase start`).
+
+### Generating Types from Remote (Linked) Database
+
+Use this command to generate types from your live, remote Supabase project. This is useful when you need to ensure your application's types are in sync with the production database schema.
+
+**Command:**
+```bash
+supabase gen types typescript --project-id <your-project-id> > src/types/database.ts
+```
+
+**How to find your `project-id`:**
+*   You can find it in your Supabase project's URL: `https://supabase.com/dashboard/project/<your-project-id>`
+*   It is also stored in the `supabase/.temp/project-ref` file after you've linked your project.
+

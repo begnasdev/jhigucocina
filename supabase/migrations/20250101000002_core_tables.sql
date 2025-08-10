@@ -9,6 +9,7 @@ CREATE TABLE restaurants (
     phone VARCHAR(20),
     email VARCHAR(255),
     description TEXT,
+    image_url TEXT,
     operating_hours TEXT,
     timezone VARCHAR(50) DEFAULT 'GMT',
     tax_rate DECIMAL(5,4) DEFAULT 0.00,

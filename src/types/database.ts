@@ -1,4 +1,3 @@
-
 export type Json =
   | string
   | number
@@ -12,31 +11,6 @@ export type Database = {
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.12 (cd3cf9e)"
-  }
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          operationName?: string
-          query?: string
-          variables?: Json
-          extensions?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
   }
   public: {
     Tables: {
@@ -750,6 +724,7 @@ export type Database = {
           currency: string | null
           description: string | null
           email: string | null
+          image_url: string | null
           is_active: boolean | null
           name: string
           operating_hours: string | null
@@ -766,6 +741,7 @@ export type Database = {
           currency?: string | null
           description?: string | null
           email?: string | null
+          image_url?: string | null
           is_active?: boolean | null
           name: string
           operating_hours?: string | null
@@ -782,6 +758,7 @@ export type Database = {
           currency?: string | null
           description?: string | null
           email?: string | null
+          image_url?: string | null
           is_active?: boolean | null
           name?: string
           operating_hours?: string | null
@@ -1117,9 +1094,6 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {
       notification_priority: ["low", "normal", "high", "urgent"],
