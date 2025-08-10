@@ -33,9 +33,10 @@ src/app/
 ├── (auth)/                      # Route group for authentication
 │   ├── login/
 │   │   └── page.tsx            # Login page
-│   ├── register/
-│   │   └── page.tsx            # Registration page
-│   └── layout.tsx              # Auth layout (no sidebar/navigation)
+│   ├── auth-code-error/
+│   │   └── page.tsx            # Auth code error page
+│   └── confirm/
+│       └── route.ts            # Confirmation route
 ```
 
 ### Main Application Routes
@@ -45,26 +46,8 @@ src/app/
 ├── (dashboard)/                 # Route group for authenticated users
 │   ├── dashboard/
 │   │   └── page.tsx            # Role-based dashboard (dynamic content)
-│   ├── restaurants/
-│   │   └── page.tsx            # Restaurant list (Super Admin only)
-│   ├── tables/
-│   │   └── page.tsx            # Table management (Manager only)
-│   ├── menu/
-│   │   ├── categories/
-│   │   │   └── page.tsx        # Menu categories (Manager only)
-│   │   └── items/
-│   │       └── page.tsx        # Menu items (Manager only)
-│   ├── orders/
-│   │   ├── page.tsx            # Orders list (all roles, filtered)
-│   │   └── history/
-│   │       └── page.tsx        # Order history
-│   ├── staff/
-│   │   └── page.tsx            # Staff management (Manager only)
-│   ├── users/
-│   │   └── page.tsx            # User management (Super Admin only)
-│   ├── qr-scanner/
-│   │   └── page.tsx            # QR scanner (Manager & Staff only)
-│   └── layout.tsx              # Dashboard layout (with sidebar/navigation)
+│   └── ddd/
+│       └── page.tsx            # Test page
 ├── layout.tsx                   # Root layout
 └── page.tsx                     # Landing page
 ```
@@ -210,12 +193,13 @@ src/lib/
 ├── auth.ts                      # Authentication utilities
 ├── supabase.ts                  # Supabase client configuration
 ├── utils.ts                     # General utility functions
+├── routes.ts                    # Application routes
 ├── role-guard.ts                # Role-based access control
 ├── api.ts                       # API utility functions
 ├── constants.ts                 # Application constants
-├── validations.ts               # Form validation schemas
 └── helpers.ts                   # Helper functions
 ```
+Note: Form validation schemas are now located under `src/schemas`.
 
 ## Hooks Directory Structure
 

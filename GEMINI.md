@@ -12,3 +12,7 @@ The application features include:
 - Order processing
 - QR code scanning for tables
 - Restaurant and staff management
+
+For forms, always use react-hook-form. For validation, always use zod.
+For style always use tailwindcss, never use inline style and normal css.
+For adding shadcn component always use `pnpm dlx shadcn@latest add <component_name>`
