@@ -54,16 +54,27 @@ export type Database = {
         Row: {
           diet_type_id: string
           name: string
+          restaurant_id: string | null
         }
         Insert: {
           diet_type_id?: string
           name: string
+          restaurant_id?: string | null
         }
         Update: {
           diet_type_id?: string
           name?: string
+          restaurant_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "diet_type_restaurant_id_fkey"
+            columns: ["restaurant_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
+            referencedColumns: ["restaurant_id"]
+          },
+        ]
       }
       menu_categories: {
         Row: {
@@ -189,6 +200,7 @@ export type Database = {
           name: string
           preparation_time: number | null
           price: number
+          restaurant_id: string | null
           updated_at: string | null
         }
         Insert: {
@@ -204,6 +216,7 @@ export type Database = {
           name: string
           preparation_time?: number | null
           price: number
+          restaurant_id?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -219,9 +232,18 @@ export type Database = {
           name?: string
           preparation_time?: number | null
           price?: number
+          restaurant_id?: string | null
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "menu_items_restaurant_id_fkey"
+            columns: ["restaurant_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
+            referencedColumns: ["restaurant_id"]
+          },
+        ]
       }
       notifications: {
         Row: {
@@ -234,6 +256,7 @@ export type Database = {
           order_id: string | null
           priority: Database["public"]["Enums"]["notification_priority"] | null
           read_at: string | null
+          restaurant_id: string | null
           sent_at: string | null
           title: string
           type: Database["public"]["Enums"]["notification_type"]
@@ -249,6 +272,7 @@ export type Database = {
           order_id?: string | null
           priority?: Database["public"]["Enums"]["notification_priority"] | null
           read_at?: string | null
+          restaurant_id?: string | null
           sent_at?: string | null
           title: string
           type: Database["public"]["Enums"]["notification_type"]
@@ -264,6 +288,7 @@ export type Database = {
           order_id?: string | null
           priority?: Database["public"]["Enums"]["notification_priority"] | null
           read_at?: string | null
+          restaurant_id?: string | null
           sent_at?: string | null
           title?: string
           type?: Database["public"]["Enums"]["notification_type"]
@@ -276,6 +301,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "orders"
             referencedColumns: ["order_id"]
+          },
+          {
+            foreignKeyName: "notifications_restaurant_id_fkey"
+            columns: ["restaurant_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
+            referencedColumns: ["restaurant_id"]
           },
           {
             foreignKeyName: "notifications_user_id_fkey"
@@ -873,7 +905,7 @@ export type Database = {
           {
             foreignKeyName: "user_roles_user_id_fkey"
             columns: ["user_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "users"
             referencedColumns: ["user_id"]
           },
