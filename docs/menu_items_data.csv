@@ -1,0 +1,10 @@
+name,description,price,is_available,is_featured
+"Jhaneko Dal","Slow-cooked trio of yellow lentils, delicately tempered with Jimbu — a wild aromatic herb native to the Himalayas",100,TRUE,FALSE
+"Harieu Sag","Taste the essence of nature with seasonal greens gently simmered in heritage cast iron",100,TRUE,FALSE
+"Mattar Paneer","Cottage cheese cubes and green peas simmered in a rich, spiced tomato-onion gravy — a beloved North Indian classic full of warmth and comfort",100,TRUE,FALSE
+"Golbheda ra dhaniya ko Achar","Charred tomatoes hand-crushed with fresh coriander, green chilies, and traditional Himalayan spices — a bold and smoky Nepali chutney bursting with flavor",100,TRUE,FALSE
+"Green Salad","Sliced of Cucumber, Carrot and tomatoes",100,TRUE,FALSE
+"Papadum","Baked lentil crackers",100,TRUE,FALSE
+"Rice","Long Grain Basmati Rice",100,TRUE,FALSE
+"Tawa Roti","Soft, whole-wheat flatbread cooked on a traditional flat griddle (tawa)",100,TRUE,FALSE
+"Local Kukhura ko tarkari","Bone-in local free-range chicken simmered slowly with traditional Nepali spices, tomatoes, and onions — delivering deep, rustic flavors with a rich, home-cooked essence",100,TRUE,FALSE
