@@ -35,14 +35,13 @@ CREATE TABLE users (
 -- Create user_roles table
 CREATE TABLE user_roles (
     user_role_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID REFERENCES users(user_id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(user_id) ON DELETE CASCADE UNIQUE,
     restaurant_id UUID REFERENCES restaurants(restaurant_id) ON DELETE CASCADE,
     role roles_enum NOT NULL,
     is_active BOOLEAN DEFAULT true,
     assigned_at TIMESTAMPTZ DEFAULT NOW(),
     expires_at TIMESTAMPTZ,
-    assigned_by UUID REFERENCES users(user_id),
-    UNIQUE(user_id, restaurant_id)
+    assigned_by UUID REFERENCES users(user_id)
 );
 
 -- Create indexes for core tables

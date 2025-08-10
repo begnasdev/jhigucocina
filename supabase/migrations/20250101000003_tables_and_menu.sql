@@ -38,6 +38,7 @@ CREATE TABLE
 CREATE TABLE
     menu_items (
         item_id UUID PRIMARY KEY DEFAULT uuid_generate_v4 (),
+        restaurant_id UUID REFERENCES restaurants (restaurant_id) ON DELETE CASCADE,
         name VARCHAR(255) NOT NULL,
         description TEXT,
         price DECIMAL(10, 2) NOT NULL CHECK (price >= 0),
@@ -102,6 +103,7 @@ UPDATE ON menu_items FOR EACH ROW EXECUTE FUNCTION update_updated_at_column ();
 -- Add diet type tables
 CREATE TABLE "diet_type" (
     "diet_type_id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    "restaurant_id" uuid REFERENCES "restaurants" ("restaurant_id") ON DELETE CASCADE,
     "name" character varying(255) NOT NULL
 );
 

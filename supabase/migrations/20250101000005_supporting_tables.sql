@@ -1,6 +1,7 @@
 -- Create notifications table
 CREATE TABLE notifications (
     notification_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    restaurant_id UUID REFERENCES restaurants(restaurant_id) ON DELETE CASCADE,
     user_id UUID REFERENCES users(user_id) ON DELETE CASCADE,
     order_id UUID REFERENCES orders(order_id) ON DELETE CASCADE,
     title VARCHAR(255) NOT NULL,
