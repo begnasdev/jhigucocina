@@ -8,10 +8,5 @@ export const config = {
     },
   },
 
-  endpoints: {
-    auth: {
-      signup: "/auth/signup",
-      login: "/auth/login",
-    },
-  },
+  endpoints: {},
 };

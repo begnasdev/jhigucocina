@@ -2,6 +2,7 @@ import type { Database } from "@/types/database";
 import { config } from "@/config";
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { routes } from "@/routes";
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -39,28 +40,26 @@ export async function updateSession(request: NextRequest) {
 
   const { data: claims } = await supabase.auth.getClaims();
 
-  console.log("claims", claims);
-
   if (
     !claims &&
-    !request.nextUrl.pathname.startsWith("/login") &&
-    !request.nextUrl.pathname.startsWith("/signup")
+    !request.nextUrl.pathname.startsWith(routes.auth.login) &&
+    !request.nextUrl.pathname.startsWith(routes.auth.signup)
   ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone();
-    url.pathname = "/login";
+    url.pathname = routes.auth.login;
     return NextResponse.redirect(url);
   }
 
   // Prevent authenticated users from accessing login/signup pages
   if (
     claims &&
-    (request.nextUrl.pathname.startsWith("/login") ||
-      request.nextUrl.pathname.startsWith("/signup") ||
-      request.nextUrl.pathname === "/")
+    (request.nextUrl.pathname.startsWith(routes.auth.login) ||
+      request.nextUrl.pathname.startsWith(routes.auth.signup) ||
+      request.nextUrl.pathname === routes.home)
   ) {
     const url = request.nextUrl.clone();
-    url.pathname = "/dashboard";
+    url.pathname = routes.home;
     return NextResponse.redirect(url);
   }
 

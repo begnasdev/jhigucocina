@@ -3,6 +3,8 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
+import { routes } from "@/routes";
+
 export async function updateTableWithQrCode(tableId: string, qrUrl: string) {
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase
@@ -15,7 +17,7 @@ export async function updateTableWithQrCode(tableId: string, qrUrl: string) {
     return { error: "Failed to update table." };
   }
 
-  revalidatePath("/dashboard/tables");
+  revalidatePath(routes.dashboard.tables);
 
   return { success: true };
 }
