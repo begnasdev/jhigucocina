@@ -226,17 +226,38 @@ erDiagram
         uuid category_id PK, FK
     }
 
+    CARTS {
+        uuid id PK
+        uuid user_id FK
+        text session_id
+        uuid restaurant_id FK
+        datetime created_at
+        datetime updated_at
+    }
+
+    CART_ITEMS {
+        uuid id PK
+        uuid cart_id FK
+        uuid menu_item_id FK
+        int quantity
+        numeric price_at_time_of_addition
+        datetime created_at
+        datetime updated_at
+    }
+
     RESTAURANTS ||--o{ USER_ROLES : "employs"
     RESTAURANTS ||--o{ TABLES : "has"
     RESTAURANTS ||--o{ MENU_CATEGORIES : "contains"
     RESTAURANTS ||--o{ ORDERS : "receives"
     RESTAURANTS ||--o{ PROMOTIONS : "offers"
+    RESTAURANTS ||--o{ CARTS : "has"
     USERS ||--o{ USER_ROLES : "assigned"
     USERS ||--o{ ORDERS : "places"
     USERS ||--o{ NOTIFICATIONS : "receives"
     USERS ||--o{ ORDER_STATUS_HISTORY : "updates"
     USERS ||--o{ QR_SCANS : "scans"
     USERS ||--o{ ORDER_PAYMENTS : "processes"
+    USERS ||--o{ CARTS : "has"
     USER_ROLES }o--|| RESTAURANTS : "belongs_to"
     USER_ROLES }o--|| USERS : "assigned_to"
     USER_ROLES }o--o| USERS : "assigned_by"
@@ -247,6 +268,7 @@ erDiagram
     MENU_CATEGORIES ||--|{ MENU_ITEM_CATEGORIES : "groups"
     MENU_CATEGORIES ||--|{ PROMOTION_CATEGORIES : "targeted by"
     MENU_ITEMS ||--|{ MENU_ITEM_CATEGORIES : "belongs to"
+    MENU_ITEMS ||--|{ CART_ITEMS : "added to"
     ORDERS }o--|| USERS : "placed_by"
     ORDERS }o--|| TABLES : "served_at"
     ORDERS }o--|| RESTAURANTS : "belongs_to"
@@ -272,3 +294,8 @@ erDiagram
     DIET_TYPE ||--|{ MENU_ITEM_DIET_TYPES : "applies to"
     PROMOTIONS ||--|{ APPLIED_PROMOTIONS : "used in"
     PROMOTIONS ||--|{ PROMOTION_CATEGORIES : "targets"
+    CARTS ||--o{ CART_ITEMS : "contains"
+    CARTS }o--|| USERS : "owned_by"
+    CARTS }o--|| RESTAURANTS : "for"
+    CART_ITEMS }o--|| CARTS : "belongs_to"
+    CART_ITEMS }o--|| MENU_ITEMS : "references"
