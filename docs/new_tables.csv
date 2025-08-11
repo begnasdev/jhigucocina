@@ -1,0 +1,11 @@
+table_number,capacity,status,restaurant_id,is_active
+1,4,available,b075da2b-d9c5-47e9-ad96-ab3f6bee3ce6,true
+2,4,available,b075da2b-d9c5-47e9-ad96-ab3f6bee3ce6,true
+3,2,available,b075da2b-d9c5-47e9-ad96-ab3f6bee3ce6,true
+4,2,available,b075da2b-d9c5-47e9-ad96-ab3f6bee3ce6,true
+5,6,available,b075da2b-d9c5-47e9-ad96-ab3f6bee3ce6,true
+6,6,available,b075da2b-d9c5-47e9-ad96-ab3f6bee3ce6,true
+7,8,available,b075da2b-d9c5-47e9-ad96-ab3f6bee3ce6,true
+8,4,available,b075da2b-d9c5-47e9-ad96-ab3f6bee3ce6,true
+9,4,available,b075da2b-d9c5-47e9-ad96-ab3f6bee3ce6,true
+10,2,available,b075da2b-d9c5-47e9-ad96-ab3f6bee3ce6,true

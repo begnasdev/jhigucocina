@@ -6,7 +6,7 @@ export const routes = {
     confirm: "/auth/confirm",
   },
   dashboard: {
-    home: "/dashboard",
-    ddd: "/ddd",
+    tables: "/tables",
+    menus: "/menus",
   },
 };
