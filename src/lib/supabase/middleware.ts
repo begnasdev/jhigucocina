@@ -59,7 +59,7 @@ export async function updateSession(request: NextRequest) {
       request.nextUrl.pathname === routes.home)
   ) {
     const url = request.nextUrl.clone();
-    url.pathname = routes.home;
+    url.pathname = routes.dashboard.tables;
     return NextResponse.redirect(url);
   }
 
