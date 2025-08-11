@@ -65,18 +65,18 @@ SELECT
     );
 
 -- Create RLS policies for user_roles
+CREATE POLICY "Users can view their own roles" ON user_roles FOR
+SELECT
+    USING (user_id = auth.uid ());
+
 CREATE POLICY "Users can view roles in their restaurants" ON user_roles FOR
 SELECT
     USING (
-        EXISTS (
+        restaurant_id IN (
             SELECT
-                1
+                get_user_restaurants.restaurant_id
             FROM
-                user_roles ur
-            WHERE
-                ur.restaurant_id = user_roles.restaurant_id
-                AND ur.user_id = auth.uid ()
-                AND ur.is_active = true
+                get_user_restaurants ()
         )
     );
 
