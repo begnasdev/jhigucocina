@@ -1045,6 +1045,12 @@ export type Database = {
           role: string
         }[]
       }
+      get_user_restaurants: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          restaurant_id: string
+        }[]
+      }
       validate_order_status_progression: {
         Args: {
           old_status: Database["public"]["Enums"]["order_status"]

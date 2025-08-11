@@ -1,301 +1,317 @@
 erDiagram
-    RESTAURANTS {
-        uuid restaurant_id PK
+    users {
+        string user_id PK
         string name
-        text address
+        string phone
+        string profile_picture
+        boolean is_active
+        timestamp last_login
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    restaurants {
+        string restaurant_id PK
+        string name
+        string address
         string phone
         string email
-        text description
-        text image_url
-        text operating_hours
-        string timezone
-        decimal tax_rate
-        decimal service_charge
+        string description
+        string image_url
+        string operating_hours
         string currency
+        float tax_rate
+        float service_charge
+        string timezone
         boolean is_active
-        datetime created_at
-        datetime updated_at
+        timestamp created_at
+        timestamp updated_at
     }
 
-    USERS {
-        uuid user_id PK
-        string name
-        text profile_picture
-        string phone
+    user_roles {
+        string user_role_id PK
+        string user_id FK
+        string restaurant_id FK
+        roles_enum role
         boolean is_active
-        datetime last_login
-        datetime created_at
-        datetime updated_at
+        timestamp assigned_at
+        string assigned_by FK
+        timestamp expires_at
     }
 
-    USER_ROLES {
-        uuid user_role_id PK
-        uuid user_id FK
-        uuid restaurant_id FK
-        enum role "super_admin, manager, staff, customer"
-        boolean is_active
-        datetime assigned_at
-        datetime expires_at
-        uuid assigned_by FK
-    }
-
-    TABLES {
-        uuid table_id PK
-        uuid restaurant_id FK
+    tables {
+        string table_id PK
+        string restaurant_id FK
         string table_number
-        text qr_code_data
-        text qr_code_url
-        int capacity
-        enum status "available, occupied, reserved, maintenance, out_of_service"
-        jsonb location_coordinates
+        integer capacity
+        table_status status
+        string qr_code_data
+        string qr_code_url
+        timestamp last_scanned
+        json location_coordinates
         boolean is_active
-        datetime last_scanned
-        datetime created_at
-        datetime updated_at
+        timestamp created_at
+        timestamp updated_at
     }
 
-    MENU_CATEGORIES {
-        uuid category_id PK
-        uuid restaurant_id FK
+    menu_categories {
+        string category_id PK
+        string restaurant_id FK
         string name
-        text description
-        text image_url
-        int sort_order
+        string description
+        string image_url
+        integer sort_order
         boolean is_active
-        datetime available_from
-        datetime available_until
-        datetime created_at
-        datetime updated_at
+        time available_from
+        time available_until
+        timestamp created_at
+        timestamp updated_at
     }
 
-    MENU_ITEMS {
-        uuid item_id PK
+    menu_items {
+        string item_id PK
+        string restaurant_id FK
         string name
-        text description
-        decimal price
-        text image_url
+        string description
+        float price
+        string image_url
+        string ingredients
+        string allergens
+        integer preparation_time
         boolean is_available
         boolean is_featured
-        int preparation_time
-        text ingredients
-        text allergens
-        jsonb customization_options
-        datetime created_at
-        datetime updated_at
+        json customization_options
+        timestamp created_at
+        timestamp updated_at
     }
 
-    MENU_ITEM_CATEGORIES {
-        uuid menu_item_id PK, FK
-        uuid category_id PK, FK
+    menu_item_categories {
+        string menu_item_id PK, FK
+        string category_id PK, FK
     }
 
-    ORDERS {
-        uuid order_id PK
-        uuid customer_id FK
-        uuid table_id FK
-        uuid restaurant_id FK
+    diet_type {
+        string diet_type_id PK
+        string restaurant_id FK
+        string name
+    }
+
+    menu_item_diet_types {
+        string menu_item_id PK, FK
+        string diet_type_id PK, FK
+    }
+
+    orders {
+        string order_id PK
+        string restaurant_id FK
+        string customer_id FK
+        string table_id FK
         string order_number
-        enum status "pending, accepted, preparing, ready, served, cancelled"
-        decimal subtotal
-        decimal tax_amount
-        decimal service_charge
-        decimal total_amount
-        decimal calculated_total
-        text special_instructions
-        datetime order_time
-        datetime accepted_at
-        datetime ready_at
-        datetime served_at
-        datetime cancelled_at
-        datetime kitchen_cutoff_time
-        int estimated_prep_time
-        int actual_prep_time
-        int max_prep_time
-        datetime cancellation_deadline
-        uuid processed_by FK
+        order_status status
+        float subtotal
+        float tax_amount
+        float service_charge
+        float total_amount
+        string special_instructions
+        string processed_by FK
+        timestamp order_time
+        timestamp created_at
+        timestamp updated_at
+        timestamp accepted_at
+        timestamp ready_at
+        timestamp served_at
+        timestamp cancelled_at
+        timestamp cancellation_deadline
+        integer estimated_prep_time
+        integer actual_prep_time
+        integer max_prep_time
+        timestamp kitchen_cutoff_time
+        float calculated_total
         boolean is_total_validated
-        datetime created_at
-        datetime updated_at
     }
 
-    ORDER_ITEMS {
-        uuid order_item_id PK
-        uuid order_id FK
-        uuid item_id FK
-        int quantity
-        decimal unit_price
-        decimal total_price
-        jsonb customizations
-        enum status "pending, preparing, ready, served"
-        datetime created_at
-        datetime updated_at
+    order_items {
+        string order_item_id PK
+        string order_id FK
+        string item_id FK
+        integer quantity
+        float unit_price
+        float total_price
+        json customizations
+        order_item_status status
+        timestamp created_at
+        timestamp updated_at
     }
 
-    NOTIFICATIONS {
-        uuid notification_id PK
-        uuid user_id FK
-        uuid order_id FK
+    order_status_history {
+        string history_id PK
+        string order_id FK
+        order_status old_status
+        order_status new_status
+        string updated_by FK
+        string notes
+        timestamp updated_at
+        integer estimated_time
+        boolean is_valid_progression
+        string validation_errors
+    }
+
+    order_payments {
+        string payment_id PK
+        string order_id FK
+        float amount_paid
+        payment_method payment_method
+        payment_status payment_status
+        string payment_reference
+        string processed_by FK
+        timestamp payment_time
+        float change_given
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    notifications {
+        string notification_id PK
+        string user_id FK
+        string order_id FK
+        string restaurant_id FK
+        notification_type type
         string title
-        text message
-        enum type "order_placed, order_accepted, order_preparing, order_ready, order_served, order_cancelled, system_alert"
-        enum priority "low, normal, high, urgent"
+        string message
+        notification_priority priority
         boolean is_read
-        jsonb metadata
-        datetime sent_at
-        datetime read_at
-        datetime expires_at
-        datetime created_at
+        timestamp sent_at
+        timestamp read_at
+        timestamp expires_at
+        json metadata
+        timestamp created_at
     }
 
-    QR_SCANS {
-        uuid scan_id PK
-        uuid table_id FK
-        uuid customer_id FK
+    qr_scans {
+        string scan_id PK
+        string table_id FK
+        string customer_id FK
+        string order_id FK
         string session_id
-        enum session_status "active, expired, completed"
-        inet ip_address
-        text user_agent
-        jsonb device_info
-        text referrer_url
-        datetime scanned_at
-        datetime expires_at
+        timestamp scanned_at
+        timestamp expires_at
+        ip_address ip_address
+        string user_agent
+        json device_info
+        string referrer_url
         boolean led_to_order
         boolean is_active_session
-        uuid order_id FK
+        session_status session_status
     }
 
-    ORDER_STATUS_HISTORY {
-        uuid history_id PK
-        uuid order_id FK
-        uuid updated_by FK
-        enum old_status "pending, accepted, preparing, ready, served, cancelled"
-        enum new_status "pending, accepted, preparing, ready, served, cancelled"
-        boolean is_valid_progression
-        text notes
-        text validation_errors
-        int estimated_time
-        datetime updated_at
-    }
-
-    ORDER_PAYMENTS {
-        uuid payment_id PK
-        uuid order_id FK
-        enum payment_method "cash, card, digital_wallet, other"
-        enum payment_status "pending, completed, failed, refunded"
-        decimal amount_paid
-        decimal change_given
-        text payment_reference
-        uuid processed_by FK
-        datetime payment_time
-        datetime created_at
-        datetime updated_at
-    }
-
-    DIET_TYPE {
-        uuid diet_type_id PK
+    promotions {
+        string promotion_id PK
+        string restaurant_id FK
         string name
-    }
-
-    MENU_ITEM_DIET_TYPES {
-        uuid menu_item_id PK, FK
-        uuid diet_type_id PK, FK
-    }
-
-    PROMOTIONS {
-        uuid promotion_id PK
-        uuid restaurant_id FK
-        string name
-        text description
+        string description
         string type
-        decimal value
-        datetime start_date
-        datetime end_date
-        string voucher_code
+        float value
+        timestamp start_date
+        timestamp end_date
         boolean is_active
+        string voucher_code
     }
 
-    APPLIED_PROMOTIONS {
-        uuid applied_promotion_id PK
-        uuid order_id FK
-        uuid promotion_id FK
-        decimal discount_amount
+    promotion_categories {
+        string promotion_id PK, FK
+        string category_id PK, FK
     }
 
-    PROMOTION_CATEGORIES {
-        uuid promotion_id PK, FK
-        uuid category_id PK, FK
+    applied_promotions {
+        string applied_promotion_id PK
+        string order_id FK
+        string promotion_id FK
+        float discount_amount
     }
 
-    CARTS {
-        uuid id PK
-        uuid user_id FK
-        text session_id
-        uuid restaurant_id FK
-        datetime created_at
-        datetime updated_at
+    carts {
+        string id PK
+        string user_id
+        string session_id
+        string restaurant_id FK
+        timestamp created_at
+        timestamp updated_at
     }
 
-    CART_ITEMS {
-        uuid id PK
-        uuid cart_id FK
-        uuid menu_item_id FK
-        int quantity
-        numeric price_at_time_of_addition
-        datetime created_at
-        datetime updated_at
+    cart_items {
+        string id PK
+        string cart_id FK
+        string menu_item_id FK
+        integer quantity
+        float price_at_time_of_addition
+        timestamp created_at
+        timestamp updated_at
     }
 
-    RESTAURANTS ||--o{ USER_ROLES : "employs"
-    RESTAURANTS ||--o{ TABLES : "has"
-    RESTAURANTS ||--o{ MENU_CATEGORIES : "contains"
-    RESTAURANTS ||--o{ ORDERS : "receives"
-    RESTAURANTS ||--o{ PROMOTIONS : "offers"
-    RESTAURANTS ||--o{ CARTS : "has"
-    USERS ||--o{ USER_ROLES : "assigned"
-    USERS ||--o{ ORDERS : "places"
-    USERS ||--o{ NOTIFICATIONS : "receives"
-    USERS ||--o{ ORDER_STATUS_HISTORY : "updates"
-    USERS ||--o{ QR_SCANS : "scans"
-    USERS ||--o{ ORDER_PAYMENTS : "processes"
-    USERS ||--o{ CARTS : "has"
-    USER_ROLES }o--|| RESTAURANTS : "belongs_to"
-    USER_ROLES }o--|| USERS : "assigned_to"
-    USER_ROLES }o--o| USERS : "assigned_by"
-    TABLES }o--|| RESTAURANTS : "located_in"
-    TABLES ||--o{ ORDERS : "serves"
-    TABLES ||--o{ QR_SCANS : "generates"
-    MENU_CATEGORIES }o--|| RESTAURANTS : "belongs_to"
-    MENU_CATEGORIES ||--|{ MENU_ITEM_CATEGORIES : "groups"
-    MENU_CATEGORIES ||--|{ PROMOTION_CATEGORIES : "targeted by"
-    MENU_ITEMS ||--|{ MENU_ITEM_CATEGORIES : "belongs to"
-    MENU_ITEMS ||--|{ CART_ITEMS : "added to"
-    ORDERS }o--|| USERS : "placed_by"
-    ORDERS }o--|| TABLES : "served_at"
-    ORDERS }o--|| RESTAURANTS : "belongs_to"
-    ORDERS }o--o| USERS : "processed_by"
-    ORDERS ||--o{ ORDER_ITEMS : "contains"
-    ORDERS ||--o{ NOTIFICATIONS : "triggers"
-    ORDERS ||--o{ ORDER_STATUS_HISTORY : "tracks"
-    ORDERS ||--o{ ORDER_PAYMENTS : "paid_by"
-    ORDERS ||--o{ QR_SCANS : "resulted_from"
-    ORDERS ||--o{ APPLIED_PROMOTIONS : "has"
-    ORDER_ITEMS }o--|| ORDERS : "belongs_to"
-    ORDER_ITEMS }o--|| MENU_ITEMS : "references"
-    NOTIFICATIONS }o--|| USERS : "sent_to"
-    NOTIFICATIONS }o--o| ORDERS : "related_to"
-    QR_SCANS }o--|| TABLES : "scanned_from"
-    QR_SCANS }o--o| USERS : "scanned_by"
-    QR_SCANS }o--o| ORDERS : "led_to"
-    ORDER_STATUS_HISTORY }o--|| ORDERS : "tracks"
-    ORDER_STATUS_HISTORY }o--|| USERS : "updated_by"
-    ORDER_PAYMENTS }o--|| ORDERS : "pays_for"
-    ORDER_PAYMENTS }o--|| USERS : "processed_by"
-    MENU_ITEMS ||--|{ MENU_ITEM_DIET_TYPES : "has"
-    DIET_TYPE ||--|{ MENU_ITEM_DIET_TYPES : "applies to"
-    PROMOTIONS ||--|{ APPLIED_PROMOTIONS : "used in"
-    PROMOTIONS ||--|{ PROMOTION_CATEGORIES : "targets"
-    CARTS ||--o{ CART_ITEMS : "contains"
-    CARTS }o--|| USERS : "owned_by"
-    CARTS }o--|| RESTAURANTS : "for"
-    CART_ITEMS }o--|| CARTS : "belongs_to"
-    CART_ITEMS }o--|| MENU_ITEMS : "references"
+    users ||--o{ user_roles : "has"
+    restaurants ||--o{ user_roles : "has"
+    users ||--o{ orders : "places"
+    restaurants ||--o{ orders : "receives"
+    tables ||--o{ orders : "for"
+    orders ||--o{ order_items : "contains"
+    menu_items ||--o{ order_items : "details"
+    orders ||--o{ order_status_history : "has"
+    users ||--o{ order_status_history : "updated by"
+    orders ||--o{ order_payments : "has"
+    users ||--o{ order_payments : "processed by"
+    users ||--o{ notifications : "receives"
+    orders ||--o{ notifications : "triggers"
+    restaurants ||--o{ notifications : "sends"
+    tables ||--o{ qr_scans : "has"
+    users ||--o{ qr_scans : "performs"
+    orders ||--o{ qr_scans : "leads to"
+    restaurants ||--o{ tables : "has"
+    restaurants ||--o{ menu_categories : "has"
+    restaurants ||--o{ menu_items : "has"
+    menu_categories ||--|{ menu_item_categories : "groups"
+    menu_items ||--|{ menu_item_categories : "belongs to"
+    menu_items ||--|{ menu_item_diet_types : "has"
+    diet_type ||--|{ menu_item_diet_types : "classifies"
+    restaurants ||--o{ diet_type : "defines"
+    restaurants ||--o{ promotions : "offers"
+    promotions ||--|{ promotion_categories : "applies to"
+    menu_categories ||--|{ promotion_categories : "targeted by"
+    orders ||--o{ applied_promotions : "uses"
+    promotions ||--o{ applied_promotions : "tracks"
+    carts ||--o{ cart_items : "contains"
+    menu_items ||--o{ cart_items : "details"
+    restaurants ||--o{ carts : "has"
+    user_roles }|--|| users : "assigned to"
+    user_roles }|--|| restaurants : "for"
+    user_roles }o--|| users : "assigned by"
+    orders }|--o| users : "placed by"
+    orders }|--|| restaurants : "for"
+    orders }|--o| tables : "at"
+    order_items }|--|| orders : "part of"
+    order_items }|--|| menu_items : "is"
+    order_status_history }|--|| orders : "tracks"
+    order_status_history }o--|| users : "updated by"
+    order_payments }|--|| orders : "for"
+    order_payments }o--|| users : "processed by"
+    notifications }o--|| users : "for"
+    notifications }o--|| orders : "about"
+    notifications }o--|| restaurants : "from"
+    qr_scans }|--|| tables : "for"
+    qr_scans }o--|| users : "by"
+    qr_scans }o--o| orders : "resulted in"
+    tables }|--|| restaurants : "in"
+    menu_categories }|--|| restaurants : "of"
+    menu_items }|--|| restaurants : "of"
+    menu_item_categories }|--|| menu_items : "of"
+    menu_item_categories }|--|| menu_categories : "in"
+    menu_item_diet_types }|--|| menu_items : "of"
+    menu_item_diet_types }|--|| diet_type : "is"
+    diet_type }o--|| restaurants : "defined by"
+    promotions }|--|| restaurants : "of"
+    promotion_categories }|--|| promotions : "of"
+    promotion_categories }|--|| menu_categories : "for"
+    applied_promotions }|--|| orders : "on"
+    applied_promotions }|--|| promotions : "of"
+    cart_items }|--|| carts : "in"
+    cart_items }|--|| menu_items : "of"
+    carts }|--|| restaurants : "for"
