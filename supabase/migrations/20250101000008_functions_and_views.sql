@@ -95,10 +95,10 @@ END;
 $$;
 
 -- Grant necessary permissions
-GRANT USAGE ON SCHEMA public TO anon, authenticated;
-GRANT ALL ON ALL TABLES IN SCHEMA public TO anon, authenticated;
-GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated;
-GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO anon, authenticated;
+GRANT USAGE ON SCHEMA TO anon, authenticated;
+GRANT ALL ON ALL TABLES IN SCHEMA TO anon, authenticated;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA TO anon, authenticated;
+GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA TO anon, authenticated;
 
 -- Add comments for documentation
 COMMENT ON TABLE restaurants IS 'Restaurant information and configuration';
@@ -118,4 +118,6 @@ COMMENT ON TABLE applied_promotions IS 'A record of every time a promotion is su
 COMMENT ON TABLE promotion_categories IS 'Links promotions to specific menu categories, allowing for targeted deals like "50% off all desserts."';
 COMMENT ON TABLE diet_type IS 'Stores various dietary classifications, such as "Vegan," "Gluten-Free," or "Vegetarian."';
 COMMENT ON TABLE menu_item_diet_types IS 'Links menu items to dietary types, indicating which dietary classifications apply to each item.';
-COMMENT ON TABLE menu_item_categories IS 'Links menu items to menu categories, allowing a single item to appear in multiple categories (e.g., "Appetizers" and "Featured").';
+COMMENT ON TABLE menu_item_categories IS 'Links menu items to menu categories, allowing a single item to appear in multiple categories (e.g., "Appetizers" and "Featured').';
+COMMENT ON TABLE carts IS 'Shopping carts for users and guest sessions.';
+COMMENT ON TABLE cart_items IS 'Individual items within a shopping cart.';
