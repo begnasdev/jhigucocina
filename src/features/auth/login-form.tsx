@@ -27,9 +27,6 @@ export function LoginForm() {
   const supabase = createClient();
 
   async function onSubmit(data: LoginSchema) {
-    console.log(data);
-    // TODO: Handle form submission
-
     const { error } = await supabase.auth.signInWithOtp({
       email: data.email,
       options: {

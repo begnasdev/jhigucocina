@@ -14,15 +14,11 @@ export async function getUserRestaurantContext() {
     return null;
   }
 
-  console.log("user", user);
-
   const { data, error } = await supabase
     .from("user_roles")
     .select("restaurant_id")
     .eq("user_id", user.id)
     .single();
-
-  console.log("data", data);
 
   if (error) {
     console.error("Error fetching user restaurant context:", error);

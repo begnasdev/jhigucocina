@@ -7,6 +7,10 @@ import { routes } from "@/routes";
 
 export async function updateTableWithQrCode(tableId: string, qrUrl: string) {
   const supabase = await createSupabaseServerClient();
+
+  console.log("tableId", tableId);
+  console.log("qrUrl", qrUrl);
+
   const { error } = await supabase
     .from("tables")
     .update({ qr_code_url: qrUrl, qr_code_data: qrUrl })
