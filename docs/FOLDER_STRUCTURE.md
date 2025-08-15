@@ -199,7 +199,29 @@ src/lib/
 ├── constants.ts                 # Application constants
 └── helpers.ts                   # Helper functions
 ```
-Note: Form validation schemas are now located under `src/schemas`.
+
+## Services Directory Structure
+
+```
+src/services/
+└── tableService.ts              # Service for handling table-related API calls
+```
+
+## Schemas Directory Structure
+
+```
+src/schemas/
+├── table-schema.ts              # Zod schemas for table validation
+└── restaurant-schema.ts         # Zod schemas for restaurant validation
+```
+
+## Utils Directory Structure
+
+```
+src/utils/
+├── axios.ts                     # Axios instance configuration for API calls
+└── strings.ts                   # Utility functions for string manipulation
+```
 
 ## Hooks Directory Structure
 
@@ -225,10 +247,10 @@ src/types/
 ├── restaurant.ts                # Restaurant-related types
 ├── order.ts                     # Order-related types
 ├── menu.ts                      # Menu-related types
-├── table.ts                     # Table-related types
+├── table.ts                     # Table-related types (including API response types)
 ├── user.ts                      # User-related types
 ├── staff.ts                     # Staff-related types
-├── api.ts                       # API response types
+├── api.ts                       # General API response types
 └── common.ts                    # Common types
 ```
 

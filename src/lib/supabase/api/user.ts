@@ -1,11 +1,11 @@
 "use server";
 
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createServerClient } from "@/lib/supabase/server";
 import { unstable_noStore as noStore } from "next/cache";
 
 export async function getUserRestaurantContext() {
   noStore();
-  const supabase = await createSupabaseServerClient();
+  const supabase = await createServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();

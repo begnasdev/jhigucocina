@@ -1,12 +1,12 @@
 "use server";
 
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
 import { routes } from "@/routes";
 
 export async function updateTableWithQrCode(tableId: string, qrUrl: string) {
-  const supabase = await createSupabaseServerClient();
+  const supabase = await createServerClient();
 
   console.log("tableId", tableId);
   console.log("qrUrl", qrUrl);

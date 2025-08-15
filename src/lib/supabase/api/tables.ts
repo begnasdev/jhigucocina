@@ -1,22 +1,104 @@
-"use server";
+import { Database } from "@/types/database";
+import { createServerClient } from "@/lib/supabase/server";
 
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { unstable_noStore as noStore } from "next/cache";
+import { InsertTable, Table, UpdateTable } from "@/types/table";
 
-export async function getTablesByRestaurant(restaurantId: string) {
-  noStore();
+/**
+ * Creates a new table.
+ * @param tableData - The data for the new table.
+ * @returns The created table.
+ */
+export async function createTable(tableData: InsertTable): Promise<Table> {
+  const supabase = await createServerClient();
+  const { data, error } = await supabase
+    .from("tables")
+    .insert(tableData)
+    .select()
+    .single();
 
-  const supabase = await createSupabaseServerClient();
+  if (error) throw new Error(`Error creating table: ${error.message}`);
+  return data;
+}
 
+/**
+ * Fetches a single table by its ID.
+ * @param tableId - The ID of the table to fetch.
+ * @returns The table object or null if not found.
+ */
+export async function getTableById(tableId: string): Promise<Table | null> {
+  const supabase = await createServerClient();
+  const { data, error } = await supabase
+    .from("tables")
+    .select("*")
+    .eq("table_id", tableId)
+    .single();
+
+  if (error) throw new Error(`Error fetching table: ${error.message}`);
+  return data;
+}
+
+/**
+ * Fetches all tables for a given restaurant.
+ * @param restaurantId - The ID of the restaurant.
+ * @returns An array of table objects.
+ */
+export async function getAllTablesByRestaurant(
+  restaurantId: string
+): Promise<Table[]> {
+  const supabase = await createServerClient();
   const { data, error } = await supabase
     .from("tables")
     .select("*")
     .eq("restaurant_id", restaurantId);
 
-  if (error) {
-    console.error("Error fetching tables:", error);
-    return [];
-  }
+  if (error) throw new Error(`Error fetching tables: ${error.message}`);
+  return data || [];
+}
 
+/**
+ * Updates an existing table.
+ * @param tableId - The ID of the table to update.
+ * @param updateData - The data to update.
+ * @returns The updated table.
+ */
+export async function updateTable(
+  tableId: string,
+  updateData: UpdateTable
+): Promise<Table> {
+  const supabase = await createServerClient();
+  const { data, error } = await supabase
+    .from("tables")
+    .update(updateData)
+    .eq("table_id", tableId)
+    .select()
+    .single();
+
+  if (error) throw new Error(`Error updating table: ${error.message}`);
   return data;
+}
+
+/**
+ * Deletes a table by its ID.
+ * @param tableId - The ID of the table to delete.
+ */
+export async function deleteTable(tableId: string): Promise<void> {
+  const supabase = await createServerClient();
+  const { error } = await supabase
+    .from("tables")
+    .delete()
+    .eq("table_id", tableId);
+
+  if (error) throw new Error(`Error deleting table: ${error.message}`);
+}
+
+/**
+ * Fetches all tables.
+ * @returns An array of all table objects.
+ */
+export async function getAllTables(): Promise<Table[]> {
+  const supabase = await createServerClient();
+  const { data, error } = await supabase.from("tables").select("*");
+
+  if (error) throw new Error(`Error fetching all tables: ${error.message}`);
+  return data || [];
 }

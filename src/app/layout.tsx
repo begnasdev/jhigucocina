@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../styles/globals.css";
+import { QueryProvider } from "@/providers/QueryProvider";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,23 +29,26 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="w-full">
-          <div className="min-h-screen relative">
-            <div
-              className="fixed inset-0 z-0"
-              style={{
-                backgroundImage: `
+        <QueryProvider>
+          <div className="w-full">
+            <div className="min-h-screen relative">
+              <div
+                className="fixed inset-0 z-0"
+                style={{
+                  backgroundImage: `
         radial-gradient(circle at 1px 1px, rgba(0,0,0,0.08) 1px, transparent 0),
         repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.02) 2px, rgba(0,0,0,0.02) 4px),
         repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.02) 2px, rgba(0,0,0,0.02) 4px)
       `,
-                backgroundSize: "8px 8px, 32px 32px, 32px 32px",
-              }}
-            />
+                  backgroundSize: "8px 8px, 32px 32px, 32px 32px",
+                }}
+              />
 
-            <div className="relative z-10">{children}</div>
+              <div className="relative z-10">{children}</div>
+            </div>
           </div>
-        </div>
+          <Toaster />
+        </QueryProvider>
       </body>
     </html>
   );

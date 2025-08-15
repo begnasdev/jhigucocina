@@ -1,20 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { Tables } from "@/types/database";
+import { Table } from "@/types/table";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { QrCodeDialog } from "./qr-code-dialog";
+import { useGetTables } from "@/hooks/queries/useTableQueries";
 
-interface TableListProps {
-  tables: Tables<"tables">[];
-  restaurantId: string;
-}
+export default function TableList() {
+  const [selectedTable, setSelectedTable] = useState<Table | null>(null);
+  const { data: tablesResponse, isLoading, isError, error } = useGetTables();
 
-export default function TableList({ tables, restaurantId }: TableListProps) {
-  const [selectedTable, setSelectedTable] = useState<Tables<"tables"> | null>(null);
+  const tables = tablesResponse?.data || [];
 
-  const getQrUrl = (tableId: string) => {
+  const getQrUrl = (tableId: string, restaurantId: string) => {
     if (typeof window !== "undefined") {
       const { protocol, host } = window.location;
       return `${protocol}//${host}/menu?restaurantId=${restaurantId}&tableId=${tableId}`;
@@ -22,18 +21,29 @@ export default function TableList({ tables, restaurantId }: TableListProps) {
     return "";
   };
 
+  if (isLoading) {
+    return <div>Loading tables...</div>;
+  }
+
+  if (isError) {
+    return <div>Error: {error.message}</div>;
+  }
+
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {tables.map((table) => (
-          <Card key={table.table_id}>
+          <Card key={(table.table_id, table.restaurant_id)}>
             <CardHeader>
               <CardTitle>Table {table.table_number}</CardTitle>
             </CardHeader>
             <CardContent>
               <p>Capacity: {table.capacity}</p>
               <p>Status: {table.status}</p>
-              <Button className="mt-4 w-full" onClick={() => setSelectedTable(table)}>
+              <Button
+                className="mt-4 w-full"
+                onClick={() => setSelectedTable(table)}
+              >
                 Generate QR Code
               </Button>
             </CardContent>
@@ -43,7 +53,7 @@ export default function TableList({ tables, restaurantId }: TableListProps) {
       {selectedTable && (
         <QrCodeDialog
           table={selectedTable}
-          qrUrl={getQrUrl(selectedTable.table_id)}
+          qrUrl={getQrUrl(selectedTable.table_id, selectedTable.restaurant_id!)}
           onOpenChange={(isOpen) => !isOpen && setSelectedTable(null)}
         />
       )}

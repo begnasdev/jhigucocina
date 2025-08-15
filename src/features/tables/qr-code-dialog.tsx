@@ -19,7 +19,11 @@ interface QrCodeDialogProps {
   onOpenChange: (isOpen: boolean) => void;
 }
 
-export function QrCodeDialog({ table, qrUrl, onOpenChange }: QrCodeDialogProps) {
+export function QrCodeDialog({
+  table,
+  qrUrl,
+  onOpenChange,
+}: QrCodeDialogProps) {
   const [isPending, startTransition] = useTransition();
 
   const handleSave = () => {
@@ -35,7 +39,7 @@ export function QrCodeDialog({ table, qrUrl, onOpenChange }: QrCodeDialogProps) 
         <DialogHeader>
           <DialogTitle>QR Code for Table {table.table_number}</DialogTitle>
         </DialogHeader>
-        <div className="p-4 bg-white rounded-lg">
+        <div className="p-6 bg-white rounded-lg flex items-center justify-center">
           <QRCode value={qrUrl} size={256} viewBox={`0 0 256 256`} />
         </div>
         <DialogFooter>
