@@ -10,8 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Tables } from "@/types/database";
-import { updateTableWithQrCode } from "./actions";
-import { useTransition } from "react";
+import { useUpdateTable } from "@/hooks/mutations/useTableMutations";
 
 interface QrCodeDialogProps {
   table: Tables<"tables">;
@@ -24,13 +23,20 @@ export function QrCodeDialog({
   qrUrl,
   onOpenChange,
 }: QrCodeDialogProps) {
-  const [isPending, startTransition] = useTransition();
+  const { mutate: updateTable, isPending } = useUpdateTable();
 
   const handleSave = () => {
-    startTransition(async () => {
-      await updateTableWithQrCode(table.table_id, qrUrl);
-      onOpenChange(false);
-    });
+    updateTable(
+      {
+        id: table.table_id,
+        data: { qr_code_url: qrUrl },
+      },
+      {
+        onSuccess: () => {
+          onOpenChange(false);
+        },
+      }
+    );
   };
 
   return (
