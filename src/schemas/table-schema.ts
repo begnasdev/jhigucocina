@@ -7,6 +7,7 @@ export const createTableSchema = z.object({
   capacity: z.number().int().positive("Capacity must be a positive number"),
   status: z.enum(Constants.public.Enums.table_status),
   is_active: z.boolean(),
+  qr_code_url: z.url().optional().nullable(),
 });
 
 export const updateTableSchema = createTableSchema.partial();

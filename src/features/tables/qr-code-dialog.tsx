@@ -23,14 +23,16 @@ export function QrCodeDialog({
   qrUrl,
   onOpenChange,
 }: QrCodeDialogProps) {
-  const { mutate: updateTable, isPending } = useUpdateTable();
+  const updateTable = useUpdateTable();
 
   const handleSave = () => {
-    updateTable(
-      {
-        id: table.table_id,
-        data: { qr_code_url: qrUrl },
-      },
+    const payload = {
+      restaurant_id: table.restaurant_id,
+      qr_code_url: qrUrl,
+    };
+
+    updateTable.mutate(
+      { id: table.table_id, data: payload },
       {
         onSuccess: () => {
           onOpenChange(false);
@@ -49,8 +51,8 @@ export function QrCodeDialog({
           <QRCode value={qrUrl} size={256} viewBox={`0 0 256 256`} />
         </div>
         <DialogFooter>
-          <Button onClick={handleSave} disabled={isPending}>
-            {isPending ? "Saving..." : "Save QR Code URL"}
+          <Button onClick={handleSave} disabled={updateTable.isPending}>
+            {updateTable.isPending ? "Saving..." : "Save QR Code URL"}
           </Button>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Close

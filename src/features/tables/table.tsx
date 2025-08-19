@@ -5,12 +5,20 @@ import { en } from "@/languages/en";
 import React from "react";
 import TableList from "./table-list";
 import { useSheet } from "@/stores/useSheet";
+import { TableForm } from "./table-form";
 
 function Table() {
-  const { openSheet } = useSheet();
+  const { openSheet, closeSheet } = useSheet();
 
   const onAddTable = () => {
-    openSheet({});
+    openSheet({
+      content: (
+        <TableForm
+          restaurant_id="b075da2b-d9c5-47e9-ad96-ab3f6bee3ce6"
+          onSuccess={() => closeSheet()}
+        />
+      ),
+    });
   };
 
   return (
@@ -20,6 +28,7 @@ function Table() {
 
         <Button onClick={onAddTable}>{en.BUTTON.ADD_TABLE}</Button>
       </section>
+
       <TableList />
     </div>
   );

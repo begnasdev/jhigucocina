@@ -6,10 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { QrCodeDialog } from "./qr-code-dialog";
 import { useGetTables } from "@/hooks/queries/useTableQueries";
+import { useSheet } from "@/stores/useSheet";
+import { TableForm } from "./table-form";
 
 export default function TableList() {
   const [selectedTable, setSelectedTable] = useState<Table | null>(null);
   const { data: tablesResponse, isLoading, isError, error } = useGetTables();
+  const { openSheet, closeSheet } = useSheet();
 
   const tables = tablesResponse?.data || [];
 
@@ -19,6 +22,19 @@ export default function TableList() {
       return `${protocol}//${host}/menu?restaurantId=${restaurantId}&tableId=${tableId}`;
     }
     return "";
+  };
+
+  const handleEditTable = (table: Table) => {
+    openSheet({
+      title: `Edit Table ${table.table_number}`,
+      content: (
+        <TableForm
+          table={table}
+          restaurant_id={table.restaurant_id!}
+          onSuccess={() => closeSheet()}
+        />
+      ),
+    });
   };
 
   if (isLoading) {
@@ -45,6 +61,13 @@ export default function TableList() {
                 onClick={() => setSelectedTable(table)}
               >
                 Generate QR Code
+              </Button>
+              <Button
+                variant="outline"
+                className="mt-2 w-full"
+                onClick={() => handleEditTable(table)}
+              >
+                Edit
               </Button>
             </CardContent>
           </Card>

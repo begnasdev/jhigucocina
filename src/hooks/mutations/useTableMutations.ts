@@ -44,8 +44,8 @@ export const useDeleteTable = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => tableService.deleteTable(id),
-    onSuccess: (response) => {
-      toast.success(response.message || "Table deleted successfully!");
+    onSuccess: () => {
+      toast.success("Table deleted successfully!");
       queryClient.invalidateQueries({ queryKey: tableKeys.all });
     },
     onError: (error) => {

@@ -7,7 +7,7 @@ export type ApiResponse<T> = {
   data: T | null;
   message: string;
   status: number;
-  errors?: any; // For validation errors
+  errors?: unknown; // For validation errors
 };
 
 // Specific types for tables based on your database schema

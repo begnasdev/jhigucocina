@@ -53,9 +53,9 @@ export const tableService = {
   /**
    * Delete table
    * @param id - Table ID
-   * @returns Promise resolving to null
+   * @returns Promise resolving to the deleted table data
    */
-  async deleteTable(id: string): Promise<ApiResponse<null>> {
+  async deleteTable(id: string) {
     const response = await apiClient.delete(endpoints.tables.byId(id));
     return response.data;
   },
