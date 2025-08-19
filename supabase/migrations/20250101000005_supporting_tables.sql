@@ -162,19 +162,4 @@ END;
 $$ language 'plpgsql';
 
 -- Apply notification trigger to orders table
-CREATE TRIGGER trigger_order_notifications AFTER UPDATE ON orders FOR EACH ROW EXECUTE FUNCTION create_order_notification();-- Migration: add_helper_functions
--- Description: Creates helper functions for use in RLS policies.
-
-CREATE OR REPLACE FUNCTION get_user_restaurants()
-RETURNS TABLE(restaurant_id UUID)
-LANGUAGE plpgsql
-SECURITY DEFINER
-AS $$
-BEGIN
-    SET search_path = '';
-    RETURN QUERY
-    SELECT ur.restaurant_id
-    FROM public.user_roles ur
-    WHERE ur.user_id = auth.uid();
-END;
-$$;
+CREATE TRIGGER trigger_order_notifications AFTER UPDATE ON orders FOR EACH ROW EXECUTE FUNCTION create_order_notification();

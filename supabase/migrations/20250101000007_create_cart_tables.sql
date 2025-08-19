@@ -32,37 +32,7 @@ CREATE INDEX idx_carts_restaurant_id ON carts (restaurant_id);
 CREATE INDEX idx_cart_items_cart_id ON cart_items (cart_id);
 CREATE INDEX idx_cart_items_menu_item_id ON cart_items (menu_item_id);
 
--- Enable Row Level Security (RLS) for carts table
-ALTER TABLE carts ENABLE ROW LEVEL SECURITY;
-
--- RLS Policy for carts: Users can only see and modify their own carts or carts associated with their session
-CREATE POLICY "Users can view their own carts." ON carts
-FOR SELECT USING (auth.uid() = user_id OR (session_id = current_setting('app.session_id', TRUE) AND auth.uid() IS NULL));
-
-CREATE POLICY "Users can insert their own carts." ON carts
-FOR INSERT WITH CHECK (auth.uid() = user_id OR (session_id = current_setting('app.session_id', TRUE) AND auth.uid() IS NULL));
-
-CREATE POLICY "Users can update their own carts." ON carts
-FOR UPDATE USING (auth.uid() = user_id OR (session_id = current_setting('app.session_id', TRUE) AND auth.uid() IS NULL));
-
-CREATE POLICY "Users can delete their own carts." ON carts
-FOR DELETE USING (auth.uid() = user_id OR (session_id = current_setting('app.session_id', TRUE) AND auth.uid() IS NULL));
-
--- Enable Row Level Security (RLS) for cart_items table
-ALTER TABLE cart_items ENABLE ROW LEVEL SECURITY;
-
--- RLS Policy for cart_items: Users can only see and modify items in their own carts
-CREATE POLICY "Users can view their own cart items." ON cart_items
-FOR SELECT USING (EXISTS (SELECT 1 FROM carts WHERE id = cart_id AND (user_id = auth.uid() OR (session_id = current_setting('app.session_id', TRUE) AND auth.uid() IS NULL))));
-
-CREATE POLICY "Users can insert their own cart items." ON cart_items
-FOR INSERT WITH CHECK (EXISTS (SELECT 1 FROM carts WHERE id = cart_id AND (user_id = auth.uid() OR (session_id = current_setting('app.session_id', TRUE) AND auth.uid() IS NULL))));
-
-CREATE POLICY "Users can update their own cart items." ON cart_items
-FOR UPDATE USING (EXISTS (SELECT 1 FROM carts WHERE id = cart_id AND (user_id = auth.uid() OR (session_id = current_setting('app.session_id', TRUE) AND auth.uid() IS NULL))));
-
-CREATE POLICY "Users can delete their own cart items." ON cart_items
-FOR DELETE USING (EXISTS (SELECT 1 FROM carts WHERE id = cart_id AND (user_id = auth.uid() OR (session_id = current_setting('app.session_id', TRUE) AND auth.uid() IS NULL))));
+-- RLS policies have been removed to allow unrestricted CRUD operations
 
 -- Function to update `updated_at` column automatically
 CREATE OR REPLACE FUNCTION update_updated_at_column()
