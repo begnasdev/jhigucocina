@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "../styles/globals.css";
 import { QueryProvider } from "@/providers/QueryProvider";
 import { Toaster } from "@/components/ui/sonner";
+import { GlobalSheet } from "@/components/commons/GlobalSheet";
+import { GlobalDialog } from "@/components/commons/GlobalDialog";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,6 +49,9 @@ export default function RootLayout({
               <div className="relative z-10">{children}</div>
             </div>
           </div>
+
+          <GlobalSheet />
+          <GlobalDialog />
           <Toaster />
         </QueryProvider>
       </body>

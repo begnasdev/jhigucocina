@@ -66,15 +66,62 @@ export async function updateTable(
   updateData: UpdateTable
 ): Promise<Table> {
   const supabase = await createServerClient();
-  const { data, error } = await supabase
+  
+  // First check if the table exists and get current user info
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  console.log("Current user ID:", user?.id);
+  console.log("Updating table ID:", tableId);
+  console.log("Update data:", updateData);
+  
+  // Check if table exists and user has access
+  const { data: existingTable, error: checkError } = await supabase
+    .from("tables")
+    .select("*")
+    .eq("table_id", tableId)
+    .maybeSingle();
+    
+  if (checkError) {
+    console.error("Error checking table:", checkError);
+    throw new Error(`Error checking table: ${checkError.message}`);
+  }
+  
+  console.log("Existing table:", existingTable);
+  
+  if (!existingTable) {
+    throw new Error(`Table with ID ${tableId} not found`);
+  }
+  
+  // Check user role
+  const { data: userRole } = await supabase
+    .from("user_roles")
+    .select("*")
+    .eq("user_id", user?.id)
+    .eq("restaurant_id", existingTable.restaurant_id)
+    .maybeSingle();
+    
+  console.log("User role:", userRole);
+  
+  // Now perform the update
+  const { data, error, count } = await supabase
     .from("tables")
     .update(updateData)
     .eq("table_id", tableId)
-    .select()
-    .single();
+    .select();
 
-  if (error) throw new Error(`Error updating table: ${error.message}`);
-  return data;
+  console.log("Update result - data:", data, "error:", error, "count:", count);
+
+  if (error) {
+    console.error("Update error:", error);
+    throw new Error(`Error updating table: ${error.message}`);
+  }
+  
+  if (!data || data.length === 0) {
+    // This likely means RLS policy is blocking the update
+    throw new Error(`Failed to update table. You may not have permission to update this table.`);
+  }
+  
+  return data[0];
 }
 
 /**

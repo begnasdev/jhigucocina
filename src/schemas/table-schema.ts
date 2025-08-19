@@ -3,10 +3,10 @@ import { Constants } from "@/types/database";
 
 export const createTableSchema = z.object({
   restaurant_id: z.uuid({ message: "Invalid restaurant ID" }),
-  table_number: z.string().min(1, { message: "Table number is required" }),
-  capacity: z.number().int().positive().optional(),
-  status: z.enum(Constants.public.Enums.table_status).optional(),
-  is_active: z.boolean().optional(),
+  table_number: z.string().min(1, "Table number is required"),
+  capacity: z.number().int().positive("Capacity must be a positive number"),
+  status: z.enum(Constants.public.Enums.table_status),
+  is_active: z.boolean(),
 });
 
 export const updateTableSchema = createTableSchema.partial();
