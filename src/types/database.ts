@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.12 (cd3cf9e)"
@@ -1032,9 +1032,9 @@ export type Database = {
       calculate_order_totals: {
         Args: { order_id_param: string }
         Returns: {
+          service_charge: number
           subtotal: number
           tax_amount: number
-          service_charge: number
           total_amount: number
         }[]
       }
@@ -1045,16 +1045,10 @@ export type Database = {
           role: string
         }[]
       }
-      get_user_restaurants: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          restaurant_id: string
-        }[]
-      }
       validate_order_status_progression: {
         Args: {
-          old_status: Database["public"]["Enums"]["order_status"]
           new_status: Database["public"]["Enums"]["order_status"]
+          old_status: Database["public"]["Enums"]["order_status"]
         }
         Returns: boolean
       }
