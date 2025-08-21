@@ -18,5 +18,9 @@ export const config = {
       root: "/restaurants",
       byId: (id: string) => `/restaurants/${id}`,
     },
+    menuItems: {
+      root: "/menu_items",
+      byId: (id: string) => `/menu_items/${id}`,
+    },
   },
 };
