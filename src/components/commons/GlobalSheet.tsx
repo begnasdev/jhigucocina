@@ -33,20 +33,22 @@ export const GlobalSheet = () => {
       <SheetContent
         autoFocus={false}
         onKeyDown={handleKeyDown}
-        className={cn("min-w-max p-0 flex flex-col h-full shadow-lg")}
+        className={cn("min-w-max flex flex-col h-full shadow-lg")}
       >
-        <div className="">
-          {title && <SheetTitle className="">{title}</SheetTitle>}
-          <SheetClose onClick={close}>
-            <X className="w-5 h-5" />
-          </SheetClose>
-        </div>
+        <section className="px-4 pt-4">
+          <div className="flex items-center justify-between">
+            {title && <SheetTitle className="">{title}</SheetTitle>}
+            <SheetClose onClick={close}>
+              <X className="w-5 h-5 cursor-pointer" />
+            </SheetClose>
+          </div>
 
-        {description && (
-          <SheetDescription className="">{description}</SheetDescription>
-        )}
+          {description && (
+            <SheetDescription className="mt-1">{description}</SheetDescription>
+          )}
+        </section>
 
-        <div className={cn("overflow-y-auto flex-1 py-4 px-6", className)}>
+        <div className={cn("overflow-y-auto flex-1 p-4", className)}>
           {content}
         </div>
       </SheetContent>
