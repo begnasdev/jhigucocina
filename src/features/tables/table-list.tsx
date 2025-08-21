@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { QrCodeDialog } from "./qr-code-dialog";
 import { useGetTables } from "@/hooks/queries/useTableQueries";
 import { useSheet } from "@/stores/useSheet";
+import { en } from "@/languages/en";
 import { TableForm } from "./table-form";
 
 export default function TableList() {
@@ -26,7 +27,7 @@ export default function TableList() {
 
   const handleEditTable = (table: Table) => {
     openSheet({
-      title: `Edit Table ${table.table_number}`,
+      title: `${en.FORM.TABLE.EDIT_TITLE} ${table.table_number}`,
       content: (
         <TableForm
           table={table}
@@ -60,14 +61,14 @@ export default function TableList() {
                 className="mt-4 w-full"
                 onClick={() => setSelectedTable(table)}
               >
-                Generate QR Code
+                {en.BUTTON.GENERATE_QR_CODE}
               </Button>
               <Button
                 variant="outline"
                 className="mt-2 w-full"
                 onClick={() => handleEditTable(table)}
               >
-                Edit
+                {en.BUTTON.EDIT}
               </Button>
             </CardContent>
           </Card>

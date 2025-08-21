@@ -3,18 +3,19 @@
 import { Button } from "@/components/ui/button";
 import { en } from "@/languages/en";
 import React from "react";
-import TableList from "./table-list";
+import MenuList from "./menu-list";
 import { useSheet } from "@/stores/useSheet";
-import { TableForm } from "./table-form";
+import { MenuForm } from "./menu-form";
 
-function Table() {
+function Menu() {
   const { openSheet, closeSheet } = useSheet();
 
-  const onAddTable = () => {
+  const onAddMenu = () => {
     openSheet({
-      title: en.FORM.TABLE.ADD_TITLE,
+      title: en.FORM.MENU_ITEM.ADD_TITLE,
+      description: en.FORM.MENU_ITEM.DESCRIPTION,
       content: (
-        <TableForm
+        <MenuForm
           restaurant_id="b075da2b-d9c5-47e9-ad96-ab3f6bee3ce6"
           onSuccess={() => closeSheet()}
         />
@@ -25,14 +26,14 @@ function Table() {
   return (
     <div className="p-6">
       <section className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold mb-4">Manage Tables</h1>
+        <h1 className="text-2xl font-bold mb-4">{en.PAGE.MANAGE_MENU}</h1>
 
-        <Button onClick={onAddTable}>{en.BUTTON.ADD_TABLE}</Button>
+        <Button onClick={onAddMenu}>{en.BUTTON.ADD_MENU_ITEM}</Button>
       </section>
 
-      <TableList />
+      <MenuList />
     </div>
   );
 }
 
-export default Table;
+export default Menu;

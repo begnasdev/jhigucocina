@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,13 +14,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { CreateTable, createTableSchema } from "@/schemas/table-schema";
-import { Tables } from "@/types/database";
-import { en } from "@/languages/en";
+import { createMenuItemSchema } from "@/schemas/menu_item-schema";
+import { MenuItem } from "@/types/menu_item";
 import {
-  useCreateTable,
-  useUpdateTable,
-} from "@/hooks/mutations/useTableMutations";
+  useCreateMenuItem,
+  useUpdateMenuItem,
+} from "@/hooks/mutations/useMenuItemMutations";
 import {
   Select,
   SelectContent,
@@ -28,45 +28,43 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Constants } from "@/types/database";
 import { useGetRestaurants } from "@/hooks/queries/useRestaurantQueries";
 
-interface TableFormProps {
-  table?: Tables<"tables">;
+type CreateMenuItem = z.infer<typeof createMenuItemSchema>;
+
+interface MenuFormProps {
+  menuItem?: MenuItem;
   onSuccess?: () => void;
-  restaurant_id?: string;
+  restaurant_id: string;
 }
 
-export function TableForm({ table, onSuccess, restaurant_id }: TableFormProps) {
-  const createTable = useCreateTable();
-  const updateTable = useUpdateTable();
+export function MenuForm({
+  menuItem,
+  onSuccess,
+  restaurant_id,
+}: MenuFormProps) {
+  const createMenuItem = useCreateMenuItem();
+  const updateMenuItem = useUpdateMenuItem();
   const { data: restaurants, isLoading: isLoadingRestaurants } =
     useGetRestaurants();
 
-  const form = useForm<CreateTable>({
-    resolver: zodResolver(createTableSchema),
+  const form = useForm<CreateMenuItem>({
+    resolver: zodResolver(createMenuItemSchema),
     defaultValues: {
-      restaurant_id: table?.restaurant_id || restaurant_id || "",
-      table_number: table?.table_number || "",
-      capacity: table?.capacity || 1,
-      status: table?.status || "available",
-      is_active: table?.is_active ?? true,
+      restaurant_id: menuItem?.restaurant_id || restaurant_id || "",
+      name: menuItem?.name || "",
+      price: menuItem?.price || 0,
+      description: menuItem?.description || "",
+      is_available: menuItem?.is_available ?? true,
     },
   });
 
-  const isSubmitting = createTable.isPending || updateTable.isPending;
+  const isSubmitting = createMenuItem.isPending || updateMenuItem.isPending;
 
-  const onSubmit = (values: CreateTable) => {
-    console.log("values", values);
-
-    const payload = {
-      ...values,
-      qr_code_url: "http://localhost:3000/tables",
-    };
-
-    if (table) {
-      updateTable.mutate(
-        { id: table.table_id, data: payload },
+  const onSubmit = (values: CreateMenuItem) => {
+    if (menuItem) {
+      updateMenuItem.mutate(
+        { id: menuItem.item_id, data: values },
         {
           onSuccess: () => {
             onSuccess?.();
@@ -74,7 +72,7 @@ export function TableForm({ table, onSuccess, restaurant_id }: TableFormProps) {
         }
       );
     } else {
-      createTable.mutate(values, {
+      createMenuItem.mutate(values, {
         onSuccess: () => {
           onSuccess?.();
         },
@@ -84,7 +82,7 @@ export function TableForm({ table, onSuccess, restaurant_id }: TableFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 p-4">
         <FormField
           control={form.control}
           name="restaurant_id"
@@ -94,7 +92,7 @@ export function TableForm({ table, onSuccess, restaurant_id }: TableFormProps) {
               <Select
                 onValueChange={field.onChange}
                 defaultValue={field.value}
-                disabled={isLoadingRestaurants || !!table?.restaurant_id}
+                disabled={isLoadingRestaurants || !!menuItem?.restaurant_id}
               >
                 <FormControl>
                   <SelectTrigger>
@@ -118,12 +116,12 @@ export function TableForm({ table, onSuccess, restaurant_id }: TableFormProps) {
         />
         <FormField
           control={form.control}
-          name="table_number"
+          name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Table Number</FormLabel>
+              <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., T1, Patio 2" {...field} />
+                <Input placeholder="e.g., Pizza, Burger" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -131,14 +129,14 @@ export function TableForm({ table, onSuccess, restaurant_id }: TableFormProps) {
         />
         <FormField
           control={form.control}
-          name="capacity"
+          name="price"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Capacity</FormLabel>
+              <FormLabel>Price</FormLabel>
               <FormControl>
                 <Input
                   type="number"
-                  placeholder="e.g., 4"
+                  placeholder="e.g., 12.99"
                   {...field}
                   onChange={(e) => field.onChange(Number(e.target.value))}
                 />
@@ -149,51 +147,44 @@ export function TableForm({ table, onSuccess, restaurant_id }: TableFormProps) {
         />
         <FormField
           control={form.control}
-          name="status"
+          name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Status</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a status" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {Constants.public.Enums.table_status.map((status) => (
-                    <SelectItem key={status} value={status}>
-                      {status}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="e.g., A delicious cheese pizza"
+                  {...field}
+                  value={field.value ?? ""}
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <FormField
           control={form.control}
-          name="is_active"
+          name="is_available"
           render={({ field }) => (
             <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
               <FormControl>
                 <Checkbox
-                  checked={field.value}
+                  checked={!!field.value}
                   onCheckedChange={field.onChange}
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
-                <FormLabel>Active</FormLabel>
+                <FormLabel>Available</FormLabel>
               </div>
             </FormItem>
           )}
         />
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting
-            ? en.BUTTON.SAVING
-            : table
-            ? en.BUTTON.UPDATE_TABLE
-            : en.BUTTON.CREATE_TABLE}
+            ? "Saving..."
+            : menuItem
+            ? "Update Menu Item"
+            : "Create Menu Item"}
         </Button>
       </form>
     </Form>
