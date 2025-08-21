@@ -28,22 +28,24 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Constants } from "@/types/database";
+import { useGetRestaurants } from "@/hooks/queries/useRestaurantQueries";
 
 interface TableFormProps {
   table?: Tables<"tables">;
   onSuccess?: () => void;
-  restaurant_id: string;
+  restaurant_id?: string;
 }
 
 export function TableForm({ table, onSuccess, restaurant_id }: TableFormProps) {
   const createTable = useCreateTable();
-
   const updateTable = useUpdateTable();
+  const { data: restaurants, isLoading: isLoadingRestaurants } =
+    useGetRestaurants();
 
   const form = useForm<CreateTable>({
     resolver: zodResolver(createTableSchema),
     defaultValues: {
-      restaurant_id: restaurant_id,
+      restaurant_id: table?.restaurant_id || restaurant_id || "",
       table_number: table?.table_number || "",
       capacity: table?.capacity || 1,
       status: table?.status || "available",
@@ -82,6 +84,37 @@ export function TableForm({ table, onSuccess, restaurant_id }: TableFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="restaurant_id"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Restaurant</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                disabled={isLoadingRestaurants || !!table?.restaurant_id}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a restaurant" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {restaurants?.data?.map((restaurant) => (
+                    <SelectItem
+                      key={restaurant.restaurant_id}
+                      value={restaurant.restaurant_id}
+                    >
+                      {restaurant.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="table_number"
