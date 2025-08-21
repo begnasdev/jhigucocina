@@ -14,5 +14,9 @@ export const config = {
       root: "/tables",
       byId: (id: string) => `/tables/${id}`,
     },
+    restaurants: {
+      root: "/restaurants",
+      byId: (id: string) => `/restaurants/${id}`,
+    },
   },
 };

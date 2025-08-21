@@ -1,5 +1,7 @@
 # API Implementation Guide
 
+> **Agent Rule:** Before implementation, first show the folder structure of what folders and files are going to be added. If you get confused, ask a clarifying question.
+
 This comprehensive guide walks through implementing a complete CRUD API feature from frontend to backend, following the app's established patterns and best practices.
 
 Use `feature` as the placeholder name - replace with your actual feature (e.g., `restaurant`, `menu`, `order`).
@@ -7,13 +9,12 @@ Use `feature` as the placeholder name - replace with your actual feature (e.g., 
 ## Quick Reference Checklist
 
 - [ ] 1. Add endpoints to config
-- [ ] 2. Create service layer
-- [ ] 3. Create query hooks
-- [ ] 4. Create mutation hooks
-- [ ] 5. Add TypeScript types
-- [ ] 6. Add query keys
+- [ ] 2. Add TypeScript types
+- [ ] 3. Create service layer
+- [ ] 4. Create query keys
+- [ ] 5. Create query hooks
+- [ ] 6. Create mutation hooks
 - [ ] 7. Create validation schemas
-- [ ] 8. Implement API routes
 
 ---
 
@@ -38,7 +39,30 @@ export const config = {
 
 ---
 
-## Step 2: Create Service Layer
+## Step 2: Add TypeScript Types
+
+**File:** `src/types/feature.ts`
+
+```typescript
+import { Database } from "./database";
+
+// Generic API response structure (consistent across app)
+export type ApiResponse<T> = {
+  data: T | null;
+  message: string;
+  status: number;
+  errors?: any; // For validation errors
+};
+
+// Feature types based on database schema
+export type Feature = Database["public"]["Tables"]["features"]["Row"];
+export type InsertFeature = Database["public"]["Tables"]["features"]["Insert"];
+export type UpdateFeature = Database["public"]["Tables"]["features"]["Update"];
+```
+
+---
+
+## Step 3: Create Service Layer
 
 **File:** `src/services/feature-service.ts`
 
@@ -117,7 +141,22 @@ export const featureService = {
 
 ---
 
-## Step 3: Create Query Hooks
+## Step 4: Create Query Keys
+
+**File:** `src/constants/queryKeys.ts`
+
+Add to existing file:
+
+```typescript
+export const featureKeys = {
+  all: ["features"] as const,
+  detail: (id: string) => [...featureKeys.all, id] as const,
+};
+```
+
+---
+
+## Step 5: Create Query Hooks
 
 **File:** `src/hooks/queries/useFeatureQueries.ts`
 
@@ -153,7 +192,7 @@ export const useGetFeatureById = (id: string) =>
 
 ---
 
-## Step 4: Create Mutation Hooks
+## Step 6: Create Mutation Hooks
 
 **File:** `src/hooks/mutations/useFeatureMutations.ts`
 
@@ -221,44 +260,6 @@ export const useDeleteFeature = () => {
       toast.error(error.message || "Failed to delete feature.");
     },
   });
-};
-```
-
----
-
-## Step 5: Add TypeScript Types
-
-**File:** `src/types/feature.ts`
-
-```typescript
-import { Database } from "./database";
-
-// Generic API response structure (consistent across app)
-export type ApiResponse<T> = {
-  data: T | null;
-  message: string;
-  status: number;
-  errors?: any; // For validation errors
-};
-
-// Feature types based on database schema
-export type Feature = Database["public"]["Tables"]["features"]["Row"];
-export type InsertFeature = Database["public"]["Tables"]["features"]["Insert"];
-export type UpdateFeature = Database["public"]["Tables"]["features"]["Update"];
-```
-
----
-
-## Step 6: Add Query Keys
-
-**File:** `src/constants/queryKeys.ts`
-
-Add to existing file:
-
-```typescript
-export const featureKeys = {
-  all: ["features"] as const,
-  detail: (id: string) => [...featureKeys.all, id] as const,
 };
 ```
 
