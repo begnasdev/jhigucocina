@@ -1,15 +1,15 @@
-// src/app/api/restaurants/[id]/route.ts
+// src/app/api/menu_items/[id]/route.ts
 import { NextResponse, NextRequest } from "next/server";
 import {
-  deleteRestaurant,
-  getRestaurantById,
-  updateRestaurant,
-} from "@/lib/supabase/api/restaurants";
-import { updateRestaurantSchema } from "@/schemas/restaurant-schema";
+  deleteMenuItem,
+  getMenuItemById,
+  updateMenuItem,
+} from "@/lib/supabase/api/menu_items";
+import { updateMenuItemSchema } from "@/schemas/menu_item-schema";
 import { z, ZodError } from "zod";
 
 const paramsSchema = z.object({
-  id: z.string().uuid({ message: "Invalid UUID format" }),
+  id: z.string().uuid({ message: "Invalid ID format" }),
 });
 
 export async function GET(
@@ -18,19 +18,19 @@ export async function GET(
 ) {
   try {
     const { id } = paramsSchema.parse(params);
-    const restaurant = await getRestaurantById(id);
+    const menuItem = await getMenuItemById(id);
 
-    if (!restaurant) {
+    if (!menuItem) {
       return NextResponse.json({
         data: null,
-        message: "Restaurant not found",
+        message: "Menu item not found",
         status: 404,
       });
     }
 
     return NextResponse.json({
-      data: restaurant,
-      message: "Restaurant retrieved successfully",
+      data: menuItem,
+      message: "Menu item retrieved successfully",
       status: 200,
     });
   } catch (error) {
@@ -58,12 +58,12 @@ export async function PUT(
   try {
     const { id } = paramsSchema.parse(params);
     const json = await req.json();
-    const data = updateRestaurantSchema.parse(json);
-    const updatedRestaurant = await updateRestaurant(id, data);
+    const data = updateMenuItemSchema.parse(json);
+    const updatedMenuItem = await updateMenuItem(id, data);
 
     return NextResponse.json({
-      data: updatedRestaurant,
-      message: "Restaurant updated successfully",
+      data: updatedMenuItem,
+      message: "Menu item updated successfully",
       status: 200,
     });
   } catch (error) {
@@ -90,11 +90,11 @@ export async function DELETE(
 ) {
   try {
     const { id } = paramsSchema.parse(params);
-    await deleteRestaurant(id);
+    await deleteMenuItem(id);
 
     return NextResponse.json({
       data: null,
-      message: "Restaurant deleted successfully",
+      message: "Menu item deleted successfully",
       status: 200,
     });
   } catch (error) {
