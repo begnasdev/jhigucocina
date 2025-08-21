@@ -1,94 +1,98 @@
-import { createClient } from "@/lib/supabase/client";
-import type { Database } from "@/types/database";
+import { createServerClient } from "@/lib/supabase/server";
+import {
+  InsertRestaurant,
+  Restaurant,
+  UpdateRestaurant,
+} from "@/types/restaurant";
 
-type Restaurant = Database["public"]["Tables"]["restaurants"]["Row"];
-type RestaurantInsert = Database["public"]["Tables"]["restaurants"]["Insert"];
-type RestaurantUpdate = Database["public"]["Tables"]["restaurants"]["Update"];
+export async function createRestaurant(
+  restaurantData: InsertRestaurant
+): Promise<Restaurant> {
+  const supabase = await createServerClient();
+  const { data, error } = await supabase
+    .from("restaurants")
+    .insert(restaurantData)
+    .select()
+    .single();
 
-const supabase = createClient();
+  if (error) throw new Error(`Error creating restaurant: ${error.message}`);
+  return data;
+}
 
-// Query Keys
-export const restaurantKeys = {
-  all: ["restaurants"] as const,
-  lists: () => [...restaurantKeys.all, "list"] as const,
-  list: (filters: string) => [...restaurantKeys.lists(), { filters }] as const,
-  details: () => [...restaurantKeys.all, "detail"] as const,
-  detail: (id: string) => [...restaurantKeys.details(), id] as const,
-};
-
-// Fetch all restaurants
-export async function fetchRestaurants(): Promise<Restaurant[]> {
+export async function getRestaurantById(
+  restaurantId: string
+): Promise<Restaurant | null> {
+  const supabase = await createServerClient();
   const { data, error } = await supabase
     .from("restaurants")
     .select("*")
-    .order("created_at", { ascending: false });
+    .eq("id", restaurantId)
+    .single();
 
-  if (error) {
-    throw new Error(error.message);
-  }
+  if (error) throw new Error(`Error fetching restaurant: ${error.message}`);
+  return data;
+}
 
+export async function getAllRestaurants(): Promise<Restaurant[]> {
+  const supabase = await createServerClient();
+  const { data, error } = await supabase.from("restaurants").select("*");
+
+  if (error) throw new Error(`Error fetching all restaurants: ${error.message}`);
   return data || [];
 }
 
-// Fetch single restaurant
-export async function fetchRestaurant(id: string): Promise<Restaurant> {
-  const { data, error } = await supabase
+export async function updateRestaurant(
+  restaurantId: string,
+  updateData: UpdateRestaurant
+): Promise<Restaurant> {
+  const supabase = await createServerClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data: existingRestaurant, error: checkError } = await supabase
     .from("restaurants")
     .select("*")
-    .eq("id", id)
-    .single();
+    .eq("id", restaurantId)
+    .maybeSingle();
 
-  if (error) {
-    throw new Error(error.message);
+  if (checkError) {
+    console.error("Error checking restaurant:", checkError);
+    throw new Error(`Error checking restaurant: ${checkError.message}`);
   }
 
-  return data;
-}
+  if (!existingRestaurant) {
+    throw new Error(`Restaurant with ID ${restaurantId} not found`);
+  }
 
-// Create restaurant
-export async function createRestaurant(
-  restaurant: RestaurantInsert
-): Promise<Restaurant> {
   const { data, error } = await supabase
     .from("restaurants")
-    .insert(restaurant)
+    .update(updateData)
+    .eq("id", restaurantId)
     .select()
     .single();
 
   if (error) {
-    throw new Error(error.message);
+    console.error("Update error:", error);
+    throw new Error(`Error updating restaurant: ${error.message}`);
+  }
+
+  if (!data) {
+    throw new Error(
+      `Failed to update restaurant. You may not have permission or the restaurant does not exist.`
+    );
   }
 
   return data;
 }
 
-// Update restaurant
-export async function updateRestaurant({
-  id,
-  updates,
-}: {
-  id: string;
-  updates: RestaurantUpdate;
-}): Promise<Restaurant> {
-  const { data, error } = await supabase
+export async function deleteRestaurant(restaurantId: string) {
+  const supabase = await createServerClient();
+  const { error } = await supabase
     .from("restaurants")
-    .update(updates)
-    .eq("id", id)
-    .select()
-    .single();
+    .delete()
+    .eq("id", restaurantId);
 
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  return data;
-}
-
-// Delete restaurant
-export async function deleteRestaurant(id: string): Promise<void> {
-  const { error } = await supabase.from("restaurants").delete().eq("id", id);
-
-  if (error) {
-    throw new Error(error.message);
-  }
+  if (error) throw new Error(`Error deleting restaurant: ${error.message}`);
 }

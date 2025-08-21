@@ -1,34 +1,22 @@
 # API Creation Guide
 
+> **Agent Rule:** Before implementation, first show the folder structure of what folders and files are going to be added. If you get confused, ask a clarifying question.
+
 This guide provides a step-by-step process for creating a full CRUD API for a new feature, ensuring consistency with the project's existing structure and best practices.
 
-We will use `item` as the placeholder feature name.
+Use `feature` as the placeholder name - replace with your actual feature (e.g., `restaurant`, `menu`, `order`).
 
-## 1. Folder & File Structure
+## Quick Reference Checklist
 
-For a new feature named `item`, you will create the following files:
-
-```
-src/
-├── app/
-│   └── api/
-│       └── items/
-│           ├── [id]/
-│           │   └── route.ts    # Handles GET by ID, PUT, DELETE
-│           └── route.ts        # Handles GET all, POST
-├── lib/
-│   └── supabase/
-│       └── api/
-│           └── items.ts        # Core Supabase database functions
-├── schemas/
-│   └── item-schema.ts          # Zod validation schemas
-└── types/
-    └── item.ts                 # TypeScript type definitions for the item
-```
+- [ ] 1. Update `database.ts`
+- [ ] 2. Create Type Definitions
+- [ ] 3. Create Zod Validation Schemas
+- [ ] 4. Create Supabase API Functions
+- [ ] 5. Create API Route Handlers
 
 ---
 
-## 2. Implementation Steps
+## Implementation Steps
 
 ### Step 1: Update Database Types
 
@@ -37,96 +25,112 @@ Before writing any code, ensure your database schema is up-to-date and you have 
 > **Important:** After running any new database migrations, always update your Supabase types to reflect the changes. This ensures type safety throughout the application.
 >
 > ```bash
-> pnpm supabase gen types typescript --project-id <your-project-id> --schema public > src/types/database.ts
+> supabase gen types typescript --project-id <your-project-id> > src/types/database.ts
 > ```
 
 ### Step 2: Create Type Definitions
 
 Create a dedicated file for your feature's types. These will be derived from the master `database.ts` type file.
 
-**File:** `src/types/item.ts`
+**File:** `src/types/feature.ts`
 
 ```typescript
-// src/types/item.ts
+// src/types/feature.ts
 import { Database } from "./database";
 
-export type Item = Database["public"]["Tables"]["items"]["Row"];
-export type InsertItem = Database["public"]["Tables"]["items"]["Insert"];
-export type UpdateItem = Database["public"]["Tables"]["items"]["Update"];
+export type Feature = Database["public"]["Tables"]["features"]["Row"];
+export type InsertFeature = Database["public"]["Tables"]["features"]["Insert"];
+export type UpdateFeature = Database["public"]["Tables"]["features"]["Update"];
 ```
 
 ### Step 3: Create Zod Validation Schemas
 
-Define the validation schemas for creating and updating your item. Use `.partial()` to keep your code DRY.
+Define the validation schemas for creating and updating your feature. Use `.partial()` to keep your code DRY.
 
-**File:** `src/schemas/item-schema.ts`
+**File:** `src/schemas/feature-schema.ts`
 
 ```typescript
-// src/schemas/item-schema.ts
+// src/schemas/feature-schema.ts
 import { z } from "zod";
 
-export const createItemSchema = z.object({
+export const createFeatureSchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string().optional(),
-  // Add other fields for your item here
+  // Add other fields for your feature here
 });
 
 // The update schema is a partial version of the create schema,
 // making all fields optional for PUT/PATCH requests.
-export const updateItemSchema = createItemSchema.partial();
+export const updateFeatureSchema = createFeatureSchema.partial();
 ```
 
 ### Step 4: Create Supabase API Functions
 
-This file contains the core logic for interacting with your Supabase table. It should import its types from `src/types/item.ts`.
+This file contains the core logic for interacting with your Supabase table. It should import its types from `src/types/feature.ts`.
 
-**File:** `src/lib/supabase/api/items.ts`
+**File:** `src/lib/supabase/api/features.ts`
 
 ```typescript
-// src/lib/supabase/api/items.ts
+// src/lib/supabase/api/features.ts
 import { createServerClient } from "@/lib/supabase/server";
-import { Item, InsertItem, UpdateItem } from "@/types/item";
+import { Feature, InsertFeature, UpdateFeature } from "@/types/feature";
 
-// Get all items
-export async function getAllItems(): Promise<Item[]> {
+// Get all features
+export async function getAllFeatures(): Promise<Feature[]> {
   const supabase = await createServerClient();
-  const { data, error } = await supabase.from("items").select("*");
-  if (error) throw new Error(`Error fetching items: ${error.message}`);
+  const { data, error } = await supabase.from("features").select("*");
+  if (error) throw new Error(`Error fetching features: ${error.message}`);
   return data || [];
 }
 
-// Get a single item by its ID
-export async function getItemById(id: string): Promise<Item | null> {
+// Get a single feature by its ID
+export async function getFeatureById(id: string): Promise<Feature | null> {
   const supabase = await createServerClient();
   // IMPORTANT: Replace "id" with your actual primary key column name
-  const { data, error } = await supabase.from("items").select("*").eq("id", id).single();
-  if (error) throw new Error(`Error fetching item ${id}: ${error.message}`);
+  const { data, error } = await supabase
+    .from("features")
+    .select("*")
+    .eq("id", id)
+    .single();
+  if (error) throw new Error(`Error fetching feature ${id}: ${error.message}`);
   return data;
 }
 
-// Create a new item
-export async function createItem(itemData: InsertItem): Promise<Item> {
+// Create a new feature
+export async function createFeature(featureData: InsertFeature): Promise<Feature> {
   const supabase = await createServerClient();
-  const { data, error } = await supabase.from("items").insert(itemData).select().single();
-  if (error) throw new Error(`Error creating item: ${error.message}`);
+  const { data, error } = await supabase
+    .from("features")
+    .insert(featureData)
+    .select()
+    .single();
+  if (error) throw new Error(`Error creating feature: ${error.message}`);
   return data;
 }
 
-// Update an existing item
-export async function updateItem(id: string, updateData: UpdateItem): Promise<Item> {
+// Update an existing feature
+export async function updateFeature(
+  id: string,
+  updateData: UpdateFeature
+): Promise<Feature> {
   const supabase = await createServerClient();
   // IMPORTANT: Replace "id" with your actual primary key column name
-  const { data, error } = await supabase.from("items").update(updateData).eq("id", id).select().single();
-  if (error) throw new Error(`Error updating item ${id}: ${error.message}`);
+  const { data, error } = await supabase
+    .from("features")
+    .update(updateData)
+    .eq("id", id)
+    .select()
+    .single();
+  if (error) throw new Error(`Error updating feature ${id}: ${error.message}`);
   return data;
 }
 
-// Delete an item
-export async function deleteItem(id: string): Promise<void> {
+// Delete a feature
+export async function deleteFeature(id: string): Promise<void> {
   const supabase = await createServerClient();
   // IMPORTANT: Replace "id" with your actual primary key column name
-  const { error } = await supabase.from("items").delete().eq("id", id);
-  if (error) throw new Error(`Error deleting item ${id}: ${error.message}`);
+  const { error } = await supabase.from("features").delete().eq("id", id);
+  if (error) throw new Error(`Error deleting feature ${id}: ${error.message}`);
 }
 ```
 
@@ -134,27 +138,28 @@ export async function deleteItem(id: string): Promise<void> {
 
 These files expose your Supabase functions as RESTful API endpoints. They handle request validation and return a standardized JSON response.
 
-**File:** `src/app/api/items/route.ts`
+**File:** `src/app/api/features/route.ts`
 
 ```typescript
-// src/app/api/items/route.ts
+// src/app/api/features/route.ts
 import { NextResponse, NextRequest } from "next/server";
-import { createItem, getAllItems } from "@/lib/supabase/api/items";
-import { createItemSchema } from "@/schemas/item-schema";
+import { createFeature, getAllFeatures } from "@/lib/supabase/api/features";
+import { createFeatureSchema } from "@/schemas/feature-schema";
 import { ZodError } from "zod";
 
 export async function GET() {
   try {
-    const items = await getAllItems();
+    const features = await getAllFeatures();
     return NextResponse.json({
-      data: items,
-      message: "Items retrieved successfully",
+      data: features,
+      message: "Features retrieved successfully",
       status: 200,
     });
   } catch (error) {
     return NextResponse.json({
       data: null,
-      message: error instanceof Error ? error.message : "An unknown error occurred",
+      message:
+        error instanceof Error ? error.message : "An unknown error occurred",
       status: 500,
     });
   }
@@ -163,12 +168,12 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const json = await req.json();
-    const data = createItemSchema.parse(json);
-    const newItem = await createItem(data);
+    const data = createFeatureSchema.parse(json);
+    const newFeature = await createFeature(data);
 
     return NextResponse.json({
-      data: newItem,
-      message: "Item created successfully",
+      data: newFeature,
+      message: "Feature created successfully",
       status: 201,
     });
   } catch (error) {
@@ -182,42 +187,46 @@ export async function POST(req: NextRequest) {
     }
     return NextResponse.json({
       data: null,
-      message: error instanceof Error ? error.message : "An unknown error occurred",
+      message:
+        error instanceof Error ? error.message : "An unknown error occurred",
       status: 500,
     });
   }
 }
 ```
 
-**File:** `src/app/api/items/[id]/route.ts`
+**File:** `src/app/api/features/[id]/route.ts`
 
 ```typescript
-// src/app/api/items/[id]/route.ts
+// src/app/api/features/[id]/route.ts
 import { NextResponse, NextRequest } from "next/server";
-import { deleteItem, getItemById, updateItem } from "@/lib/supabase/api/items";
-import { updateItemSchema } from "@/schemas/item-schema";
+import { deleteFeature, getFeatureById, updateFeature } from "@/lib/supabase/api/features";
+import { updateFeatureSchema } from "@/schemas/feature-schema";
 import { z, ZodError } from "zod";
 
 const paramsSchema = z.object({
   id: z.uuid({ message: "Invalid ID format" }), // Use z.uuid() for UUIDs
 });
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const { id } = paramsSchema.parse(params);
-    const item = await getItemById(id);
+    const feature = await getFeatureById(id);
 
-    if (!item) {
+    if (!feature) {
       return NextResponse.json({
         data: null,
-        message: "Item not found",
+        message: "Feature not found",
         status: 404,
       });
     }
 
     return NextResponse.json({
-      data: item,
-      message: "Item retrieved successfully",
+      data: feature,
+      message: "Feature retrieved successfully",
       status: 200,
     });
   } catch (error) {
@@ -231,22 +240,26 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     }
     return NextResponse.json({
       data: null,
-      message: error instanceof Error ? error.message : "An unknown error occurred",
+      message:
+        error instanceof Error ? error.message : "An unknown error occurred",
       status: 500,
     });
   }
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const { id } = paramsSchema.parse(params);
     const json = await req.json();
-    const data = updateItemSchema.parse(json);
-    const updatedItem = await updateItem(id, data);
+    const data = updateFeatureSchema.parse(json);
+    const updatedFeature = await updateFeature(id, data);
 
     return NextResponse.json({
-      data: updatedItem,
-      message: "Item updated successfully",
+      data: updatedFeature,
+      message: "Feature updated successfully",
       status: 200,
     });
   } catch (error) {
@@ -260,28 +273,55 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     }
     return NextResponse.json({
       data: null,
-      message: error instanceof Error ? error.message : "An unknown error occurred",
+      message:
+        error instanceof Error ? error.message : "An unknown error occurred",
       status: 500,
     });
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const { id } = paramsSchema.parse(params);
-    await deleteItem(id);
+    await deleteFeature(id);
 
     return NextResponse.json({
       data: null,
-      message: "Item deleted successfully",
+      message: "Feature deleted successfully",
       status: 200,
     });
   } catch (error) {
     return NextResponse.json({
       data: null,
-      message: error instanceof Error ? error.message : "An unknown error occurred",
+      message:
+        error instanceof Error ? error.message : "An unknown error occurred",
       status: 500,
     });
   }
 }
+```
+
+---
+
+## File Structure Overview
+
+```
+src/
+├── app/
+│   └── api/
+│       └── features/
+│           ├── [id]/
+│           │   └── route.ts    # Handles GET by ID, PUT, DELETE
+│           └── route.ts        # Handles GET all, POST
+├── lib/
+│   └── supabase/
+│       └── api/
+│           └── features.ts     # Core Supabase database functions
+├── schemas/
+│   └── feature-schema.ts       # Zod validation schemas
+└── types/
+    └── feature.ts              # TypeScript type definitions
 ```
