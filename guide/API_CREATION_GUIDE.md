@@ -97,7 +97,9 @@ export async function getFeatureById(id: string): Promise<Feature | null> {
 }
 
 // Create a new feature
-export async function createFeature(featureData: InsertFeature): Promise<Feature> {
+export async function createFeature(
+  featureData: InsertFeature
+): Promise<Feature> {
   const supabase = await createServerClient();
   const { data, error } = await supabase
     .from("features")
@@ -182,7 +184,7 @@ export async function POST(req: NextRequest) {
         data: null,
         message: "Validation failed",
         status: 400,
-        errors: error.errors,
+        errors: error.issues,
       });
     }
     return NextResponse.json({
@@ -200,7 +202,11 @@ export async function POST(req: NextRequest) {
 ```typescript
 // src/app/api/features/[id]/route.ts
 import { NextResponse, NextRequest } from "next/server";
-import { deleteFeature, getFeatureById, updateFeature } from "@/lib/supabase/api/features";
+import {
+  deleteFeature,
+  getFeatureById,
+  updateFeature,
+} from "@/lib/supabase/api/features";
 import { updateFeatureSchema } from "@/schemas/feature-schema";
 import { z, ZodError } from "zod";
 
@@ -235,7 +241,7 @@ export async function GET(
         data: null,
         message: "Validation failed",
         status: 400,
-        errors: error.errors,
+        errors: error.issues,
       });
     }
     return NextResponse.json({
@@ -268,7 +274,7 @@ export async function PUT(
         data: null,
         message: "Validation failed",
         status: 400,
-        errors: error.errors,
+        errors: error.issues,
       });
     }
     return NextResponse.json({
