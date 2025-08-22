@@ -22,6 +22,8 @@ export const createOrderSchema = z.object({
     .min(1, "Order must have at least one item."),
 });
 
+export type CreateOrder = z.infer<typeof createOrderSchema>;
+
 export const updateOrderSchema = createOrderSchema
   .omit({ order_items: true })
   .partial();

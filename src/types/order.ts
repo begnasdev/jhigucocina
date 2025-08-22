@@ -1,5 +1,12 @@
 import { Database } from "./database";
 
+export type ApiResponse<T> = {
+  data: T | null;
+  message: string;
+  status: number;
+  errors?: any;
+};
+
 export type Order = Database["public"]["Tables"]["orders"]["Row"];
 export type InsertOrder = Database["public"]["Tables"]["orders"]["Insert"];
 export type UpdateOrder = Database["public"]["Tables"]["orders"]["Update"];

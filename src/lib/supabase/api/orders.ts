@@ -7,9 +7,7 @@ import {
   UpdateOrder,
 } from "@/types/order";
 import { z } from "zod";
-import { createOrderSchema } from "@/schemas/order-schema";
-
-type CreateOrderWithItems = z.infer<typeof createOrderSchema>;
+import { CreateOrder, createOrderSchema } from "@/schemas/order-schema";
 
 export async function getAllOrders(): Promise<OrderWithItems[]> {
   const supabase = await createServerClient();
@@ -35,9 +33,7 @@ export async function getOrderById(id: string): Promise<OrderWithItems | null> {
   return data;
 }
 
-export async function createOrder(
-  orderData: CreateOrderWithItems
-): Promise<any> {
+export async function createOrder(orderData: CreateOrder): Promise<any> {
   const supabase = await createServerClient();
   const { order_items, ...newOrderData } = orderData;
 

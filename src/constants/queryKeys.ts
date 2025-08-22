@@ -13,3 +13,8 @@ export const menuItemKeys = {
   list: (filters: object) => [...menuItemKeys.all, { filters }] as const,
   detail: (id: string) => [...menuItemKeys.all, id] as const,
 };
+
+export const orderKeys = {
+  all: ["orders"] as const,
+  detail: (id: string) => [...orderKeys.all, id] as const,
+};

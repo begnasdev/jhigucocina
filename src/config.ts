@@ -22,5 +22,9 @@ export const config = {
       root: "/menu_items",
       byId: (id: string) => `/menu_items/${id}`,
     },
+    orders: {
+      root: "/orders",
+      byId: (id: string) => `/orders/${id}`,
+    },
   },
 };
