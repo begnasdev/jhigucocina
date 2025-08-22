@@ -3,6 +3,7 @@
 import { useGetMenuItems } from "@/hooks/queries/useMenuItemQueries";
 import MenuItemCard from "@/features/cart/MenuItemCard";
 import CartIcon from "@/features/cart/CartIcon";
+import { en } from "@/languages/en";
 
 type MenuOrderProps = {
   restaurantId: string;

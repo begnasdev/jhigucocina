@@ -9,8 +9,8 @@ type MenuOrderPageProps = {
   };
 };
 
-const MenuOrderPage = ({ params, searchParams }: MenuOrderPageProps) => {
-  const { restaurantId } = params;
+const MenuOrderPage = async ({ params, searchParams }: MenuOrderPageProps) => {
+  const { restaurantId } = await params;
 
   return <MenuOrder restaurantId={restaurantId} />;
 };
