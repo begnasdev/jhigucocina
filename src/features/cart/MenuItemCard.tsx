@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { en } from "@/languages/en";
 import { useCartStore } from "@/stores/useCartStore";
 import { Tables } from "@/types/database";
 import { MenuItem } from "@/types/menu_item";

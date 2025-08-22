@@ -1,9 +1,10 @@
-'use client';
+"use client";
 
-import { ShoppingCart } from 'lucide-react';
-import { useCartStore } from '@/stores/useCartStore';
-import { useSheet } from '@/stores/useSheet';
-import CartView from './CartView';
+import { ShoppingCart } from "lucide-react";
+import { useCartStore } from "@/stores/useCartStore";
+import { useSheet } from "@/stores/useSheet";
+import CartView from "./CartView";
+import { en } from "@/languages/en";
 
 const CartIcon = () => {
   const totalItems = useCartStore((state) => state.totalItems());

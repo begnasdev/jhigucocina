@@ -10,7 +10,7 @@ type MenuOrderProps = {
   tableId?: string;
 };
 
-const MenuOrder = ({ restaurantId, tableId }: MenuOrderProps) => {
+function MenuOrder({ restaurantId, tableId }: MenuOrderProps) {
   const {
     data: menuItemsResponse,
     isLoading,
@@ -48,6 +48,6 @@ const MenuOrder = ({ restaurantId, tableId }: MenuOrderProps) => {
       </div>
     </div>
   );
-};
+}
 
 export default MenuOrder;

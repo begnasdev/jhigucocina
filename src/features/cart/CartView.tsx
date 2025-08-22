@@ -1,17 +1,19 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { useCartStore } from '@/stores/useCartStore';
-import { Trash2 } from 'lucide-react';
-import Image from 'next/image';
+import { Button } from "@/components/ui/button";
+import { en } from "@/languages/en";
+import { useCartStore } from "@/stores/useCartStore";
+import { Trash2 } from "lucide-react";
+import Image from "next/image";
 
 const CartView = () => {
-  const { items, removeItem, updateQuantity, totalPrice, clearCart } = useCartStore();
+  const { items, removeItem, updateQuantity, totalPrice, clearCart } =
+    useCartStore();
 
   const handlePlaceOrder = () => {
-    console.log('Placing order with:', items);
+    console.log("Placing order with:", items);
     // Here we will later call the API to place the order
-    alert('Order placed successfully! (Check console for details)');
+    alert("Order placed successfully! (Check console for details)");
     clearCart();
   };
 
