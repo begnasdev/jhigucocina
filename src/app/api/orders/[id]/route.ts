@@ -8,7 +8,7 @@ import { updateOrderSchema } from "@/schemas/order-schema";
 import { z, ZodError } from "zod";
 
 const paramsSchema = z.object({
-  id: z.string().uuid({ message: "Invalid ID format" }),
+  id: z.uuid({ message: "Invalid ID format" }),
 });
 
 export async function GET(

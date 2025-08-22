@@ -9,7 +9,7 @@ import { updateRestaurantSchema } from "@/schemas/restaurant-schema";
 import { z, ZodError } from "zod";
 
 const paramsSchema = z.object({
-  id: z.string().uuid({ message: "Invalid UUID format" }),
+  id: z.uuid({ message: "Invalid UUID format" }),
 });
 
 export async function GET(
