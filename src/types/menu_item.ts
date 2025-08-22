@@ -9,5 +9,16 @@ export type ApiResponse<T> = {
 };
 
 export type MenuItem = Database["public"]["Tables"]["menu_items"]["Row"];
-export type InsertMenuItem = Database["public"]["Tables"]["menu_items"]["Insert"];
-export type UpdateMenuItem = Database["public"]["Tables"]["menu_items"]["Update"];
+export type InsertMenuItem =
+  Database["public"]["Tables"]["menu_items"]["Insert"];
+export type UpdateMenuItem =
+  Database["public"]["Tables"]["menu_items"]["Update"];
+
+export interface MenuItemFilters {
+  restaurant_id?: string;
+  name?: string;
+  is_available?: boolean;
+  is_featured?: boolean;
+  min_price?: number;
+  max_price?: number;
+}

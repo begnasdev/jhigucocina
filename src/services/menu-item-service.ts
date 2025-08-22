@@ -5,6 +5,7 @@ import {
   MenuItem,
   InsertMenuItem,
   UpdateMenuItem,
+  MenuItemFilters,
 } from "@/types/menu_item";
 
 const { endpoints } = config;
@@ -12,10 +13,23 @@ const { endpoints } = config;
 export const menuItemService = {
   /**
    * Get all menu items
+   * @param filters - Optional filters for menu items
    * @returns Promise resolving to all menu items
    */
-  async getAllMenuItems(): Promise<ApiResponse<MenuItem[]>> {
-    const response = await apiClient.get(endpoints.menuItems.root);
+  async getAllMenuItems(
+    filters?: MenuItemFilters
+  ): Promise<ApiResponse<MenuItem[]>> {
+    const params = new URLSearchParams();
+    if (filters) {
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          params.append(key, String(value));
+        }
+      });
+    }
+    const response = await apiClient.get(endpoints.menuItems.root, {
+      params,
+    });
     return response.data;
   },
 
@@ -37,7 +51,10 @@ export const menuItemService = {
   async createMenuItem(
     menuItemData: InsertMenuItem
   ): Promise<ApiResponse<MenuItem>> {
-    const response = await apiClient.post(endpoints.menuItems.root, menuItemData);
+    const response = await apiClient.post(
+      endpoints.menuItems.root,
+      menuItemData
+    );
     return response.data;
   },
 

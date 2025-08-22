@@ -24,8 +24,8 @@ function Table() {
 
   return (
     <div className="p-6">
-      <section className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold mb-4">Manage Tables</h1>
+      <section className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">{en.PAGE.MANAGE_TABLES}</h1>
 
         <Button onClick={onAddTable}>{en.BUTTON.ADD_TABLE}</Button>
       </section>

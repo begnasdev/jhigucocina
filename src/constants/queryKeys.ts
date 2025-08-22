@@ -10,5 +10,6 @@ export const restaurantKeys = {
 
 export const menuItemKeys = {
   all: ["menuItems"] as const,
+  list: (filters: object) => [...menuItemKeys.all, { filters }] as const,
   detail: (id: string) => [...menuItemKeys.all, id] as const,
 };

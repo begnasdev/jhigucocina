@@ -10,6 +10,7 @@ export const en = {
     SAVING: "Saving...",
     GENERATE_QR_CODE: "Generate QR Code",
     EDIT: "Edit",
+    ADD_TO_CART: "Add to Cart",
   },
 
   FORM: {
@@ -28,5 +29,12 @@ export const en = {
   PAGE: {
     MANAGE_TABLES: "Manage Tables",
     MANAGE_MENU: "Manage Menu",
+    YOUR_CART: "Your Cart",
+    CART_EMPTY: "Your cart is empty.",
+    TOTAL: "Total",
+    PLACE_ORDER: "Place Order",
+    LOADING_MENU: "Loading menu...",
+    ERROR_LOADING_MENU: "Error loading menu.",
+    MENU: "Menu",
   },
 };

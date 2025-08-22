@@ -3,15 +3,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { menuItemService } from "@/services/menu-item-service";
 import { menuItemKeys } from "@/constants/queryKeys";
+import { MenuItemFilters } from "@/types/menu_item";
 
 /**
  * Hook to fetch all menu items
+ * @param filters - Optional filters for menu items
  * @returns Query for all menu items
  */
-export const useGetMenuItems = () =>
+export const useGetMenuItems = (filters?: MenuItemFilters) =>
   useQuery({
-    queryKey: menuItemKeys.all,
-    queryFn: menuItemService.getAllMenuItems,
+    queryKey: menuItemKeys.list(filters || {}),
+    queryFn: () => menuItemService.getAllMenuItems(filters),
   });
 
 /**

@@ -3,10 +3,29 @@ import { NextResponse, NextRequest } from "next/server";
 import { createMenuItem, getAllMenuItems } from "@/lib/supabase/api/menu_items";
 import { createMenuItemSchema } from "@/schemas/menu_item-schema";
 import { ZodError } from "zod";
+import { MenuItemFilters } from "@/types/menu_item";
+import { parseFilters, FilterConfig } from "@/utils/filter-parser";
 
-export async function GET() {
+// Define the specific filter configuration for menu items
+const menuItemFilterConfig: FilterConfig<MenuItemFilters> = {
+  restaurant_id: "string",
+  name: "string",
+  is_available: "boolean",
+  is_featured: "boolean",
+  min_price: "number",
+  max_price: "number",
+};
+
+export async function GET(req: NextRequest) {
   try {
-    const menuItems = await getAllMenuItems();
+    const { searchParams } = new URL(req.url);
+
+    const filters = parseFilters<MenuItemFilters>(
+      searchParams,
+      menuItemFilterConfig
+    );
+
+    const menuItems = await getAllMenuItems(filters);
     return NextResponse.json({
       data: menuItems,
       message: "Menu items retrieved successfully",
