@@ -8,6 +8,7 @@ import { useGetMenuItems } from "@/hooks/queries/useMenuItemQueries";
 import { useSheet } from "@/stores/useSheet";
 import { MenuForm } from "./menu-form";
 import { en } from "@/languages/en";
+import Image from "next/image";
 
 export default function MenuList() {
   const {
@@ -44,7 +45,25 @@ export default function MenuList() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {menuItems.map((menuItem) => (
-        <Card key={menuItem.item_id}>
+        <Card key={menuItem.item_id} className="!pt-0 overflow-hidden">
+          {menuItem.image_url && (
+            <div className="relative h-44 w-full">
+              {/* <Image
+                src={menuItem.image_url}
+                alt={menuItem.name}
+                fill
+                style={{ objectFit: "cover" }}
+              /> */}
+
+              <Image
+                src={menuItem.image_url}
+                alt={menuItem.name}
+                layout="fill"
+                objectFit="cover"
+                className="rounded-md"
+              />
+            </div>
+          )}
           <CardHeader>
             <CardTitle>{menuItem.name}</CardTitle>
           </CardHeader>
