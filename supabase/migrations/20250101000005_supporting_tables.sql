@@ -118,11 +118,12 @@ CREATE TRIGGER update_order_payments_updated_at BEFORE UPDATE ON order_payments 
 -- Create notification trigger function
 CREATE OR REPLACE FUNCTION create_order_notification()
 RETURNS TRIGGER AS $$
-BEGIN
+BEGIN   
     -- Create notification when order status changes
     IF TG_OP = 'UPDATE' AND OLD.status != NEW.status THEN
-        INSERT INTO notifications (user_id, order_id, title, message, type, priority)
+        INSERT INTO notifications (restaurant_id, user_id, order_id, title, message, type, priority)
         VALUES (
+            NEW.restaurant_id,
             NEW.customer_id,
             NEW.order_id,
             CASE NEW.status
@@ -142,17 +143,17 @@ BEGIN
                 ELSE 'Your order status has been updated to: ' || NEW.status
             END,
             CASE NEW.status
-                WHEN 'accepted' THEN 'order_accepted'
-                WHEN 'preparing' THEN 'order_preparing'
-                WHEN 'ready' THEN 'order_ready'
-                WHEN 'served' THEN 'order_served'
-                WHEN 'cancelled' THEN 'order_cancelled'
-                ELSE 'system_alert'
+                WHEN 'accepted' THEN 'order_accepted'::notification_type
+                WHEN 'preparing' THEN 'order_preparing'::notification_type
+                WHEN 'ready' THEN 'order_ready'::notification_type
+                WHEN 'served' THEN 'order_served'::notification_type
+                WHEN 'cancelled' THEN 'order_cancelled'::notification_type
+                ELSE 'system_alert'::notification_type
             END,
             CASE NEW.status
-                WHEN 'ready' THEN 'high'
-                WHEN 'cancelled' THEN 'high'
-                ELSE 'normal'
+                WHEN 'ready' THEN 'high'::notification_priority
+                WHEN 'cancelled' THEN 'high'::notification_priority
+                ELSE 'normal'::notification_priority
             END
         );
     END IF;

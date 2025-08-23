@@ -1,6 +1,8 @@
 "use client";
 
 import { ShoppingCart } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useCartStore } from "@/stores/useCartStore";
 import { useSheet } from "@/stores/useSheet";
 import CartView from "./CartView";
@@ -28,17 +30,18 @@ const CartIcon = () => {
   };
 
   return (
-    <button
-      onClick={handleOpenCart}
-      className="relative p-2 rounded-full hover:bg-gray-100"
-    >
-      <ShoppingCart className="h-6 w-6" />
+    <Button variant="ghost" size="icon" className="relative" onClick={handleOpenCart}>
+      <ShoppingCart className="h-5 w-5" />
       {totalItems > 0 && (
-        <span className="absolute top-0 right-0 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full">
-          {totalItems}
-        </span>
+        <Badge 
+          variant="destructive" 
+          className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs flex items-center justify-center"
+        >
+          {totalItems > 99 ? "99+" : totalItems}
+        </Badge>
       )}
-    </button>
+      <span className="sr-only">Shopping Cart</span>
+    </Button>
   );
 };
 

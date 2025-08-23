@@ -21,4 +21,12 @@ export type UpdateOrderItem =
 // This is the standard shape returned by our API's GET endpoints.
 export type OrderWithItems = Order & {
   order_items: OrderItem[];
+  restaurant: {
+    name: string;
+    restaurant_id: string;
+  };
+  customer: {
+    name: string;
+    user_id: string;
+  };
 };

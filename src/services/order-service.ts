@@ -1,6 +1,12 @@
 import { apiClient } from "@/utils/axios";
 import { config } from "@/config";
-import { ApiResponse, Order, InsertOrder, UpdateOrder } from "@/types/order";
+import {
+  ApiResponse,
+  Order,
+  InsertOrder,
+  UpdateOrder,
+  OrderWithItems,
+} from "@/types/order";
 import { CreateOrder } from "@/schemas/order-schema";
 
 const { endpoints } = config;
@@ -10,7 +16,7 @@ export const orderService = {
    * Get all orders
    * @returns Promise resolving to all orders
    */
-  async getAllOrders(): Promise<ApiResponse<Order[]>> {
+  async getAllOrders(): Promise<ApiResponse<OrderWithItems[]>> {
     const response = await apiClient.get(endpoints.orders.root);
     return response.data;
   },

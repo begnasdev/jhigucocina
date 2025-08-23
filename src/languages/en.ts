@@ -11,6 +11,11 @@ export const en = {
     GENERATE_QR_CODE: "Generate QR Code",
     EDIT: "Edit",
     ADD_TO_CART: "Add to Cart",
+    
+    APPROVE: "Approve",
+    CANCEL: "Cancel",
+    YES_CANCEL_ORDER: "Yes, Cancel Order",
+    LOADING: "...",
   },
 
   FORM: {
@@ -36,5 +41,27 @@ export const en = {
     LOADING_MENU: "Loading menu...",
     ERROR_LOADING_MENU: "Error loading menu.",
     MENU: "Menu",
+  },
+
+  DIALOG: {
+    CANCEL_ORDER_TITLE: "Cancel Order",
+    CANCEL_ORDER_DESCRIPTION: "Are you sure you want to cancel order #{orderNumber}? This action cannot be undone.",
+  },
+
+  NOTIFICATIONS: {
+    TITLE: "Notifications",
+    NO_NOTIFICATIONS: "No notifications",
+    NO_NOTIFICATIONS_DESCRIPTION: "You're all caught up! No new notifications.",
+    MARK_ALL_READ: "Mark all as read",
+    MARK_AS_READ: "Mark as read",
+    VIEW_ALL: "View All",
+    NEW: "New",
+  },
+
+  PROFILE: {
+    PROFILE_SETTINGS: "Profile Settings",
+    ACCOUNT_SETTINGS: "Account Settings",
+    MANAGE_ACCOUNT: "Manage your account",
+    SIGN_OUT: "Sign Out",
   },
 };

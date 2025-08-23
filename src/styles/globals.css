@@ -37,6 +37,16 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
+  /* Colors */
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-error: var(--error);
+  --color-error-foreground: var(--error-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
@@ -89,6 +99,17 @@
   --sidebar-accent-foreground: oklch(0.4115 0.0516 81.5338);
   --sidebar-border: oklch(0.9098 0.0264 82.3824);
   --sidebar-ring: oklch(0.5696 0.0653 79.2464);
+
+  /* Colors */
+  --success: oklch(0.6434 0.0972 142.4956);
+  --success-foreground: oklch(1 0 0);
+  --warning: oklch(0.7716 0.1367 83.3682);
+  --warning-foreground: oklch(0.2504 0.0178 82.1571);
+  --error: oklch(0.5523 0.1631 24.1787);
+  --error-foreground: oklch(1 0 0);
+  --info: oklch(0.6575 0.1263 248.4056);
+  --info-foreground: oklch(1 0 0);
+
   --font-sans: Geist, ui-sans-serif, sans-serif, system-ui;
   --font-serif: EB Garamond;
   --font-mono: IBM Plex Mono, ui-monospace, monospace;
@@ -143,6 +164,17 @@
   --sidebar-accent-foreground: oklch(0.9283 0.0251 81.1233);
   --sidebar-border: oklch(0.3823 0.0344 78.8791);
   --sidebar-ring: oklch(0.7716 0.0591 83.3682);
+
+  /* Colors */
+  --success: oklch(0.5434 0.0872 142.4956);
+  --success-foreground: oklch(0.9283 0.0251 81.1233);
+  --warning: oklch(0.6716 0.1267 83.3682);
+  --warning-foreground: oklch(0.2504 0.0178 82.1571);
+  --error: oklch(0.4708 0.1367 24.0033);
+  --error-foreground: oklch(0.9283 0.0251 81.1233);
+  --info: oklch(0.5575 0.1163 248.4056);
+  --info-foreground: oklch(0.9283 0.0251 81.1233);
+
   --font-sans: Geist, ui-sans-serif, sans-serif, system-ui;
   --font-serif: EB Garamond;
   --font-mono: IBM Plex Mono, ui-monospace, monospace;

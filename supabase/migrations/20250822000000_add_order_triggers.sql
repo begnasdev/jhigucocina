@@ -35,7 +35,7 @@ BEGIN
   -- Check if the status is actually being changed to avoid unnecessary processing.
   IF NEW.status IS DISTINCT FROM OLD.status THEN
     -- Call the existing validation function to check if the transition is allowed.
-    IF NOT public.validate_order_status_progression(NEW.status, OLD.status) THEN
+    IF NOT public.validate_order_status_progression(OLD.status, NEW.status) THEN
       -- If the transition is not valid, block the update and raise an error.
       RAISE EXCEPTION 'Invalid order status transition from % to %', OLD.status, NEW.status;
     END IF;

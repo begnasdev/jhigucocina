@@ -14,7 +14,9 @@ export async function getAllOrders(): Promise<OrderWithItems[]> {
   // Fetch orders and their related items in a single query.
   const { data, error } = await supabase
     .from("orders")
-    .select("*, order_items(*)");
+    .select(
+      "*, order_items(*), restaurant:restaurants(restaurant_id, name), customer:users!orders_customer_id_fkey(user_id, name)"
+    );
 
   if (error) throw new Error(`Error fetching orders: ${error.message}`);
   return data || [];
@@ -25,7 +27,9 @@ export async function getOrderById(id: string): Promise<OrderWithItems | null> {
   // Fetch a single order and its related items.
   const { data, error } = await supabase
     .from("orders")
-    .select("*, order_items(*)")
+    .select(
+      "*, order_items(*), restaurant:restaurants(restaurant_id, name), customer:users!orders_customer_id_fkey(user_id, name)"
+    )
     .eq("order_id", id)
     .single();
 
@@ -137,7 +141,9 @@ export async function updateOrder(
     .from("orders")
     .update(updateData)
     .eq("order_id", id)
-    .select("*, order_items(*)") // Fetch the items as well
+    .select(
+      "*, order_items(*), restaurant:restaurants(restaurant_id, name), customer:users!orders_customer_id_fkey(user_id, name)"
+    ) // Fetch the items as well
     .single();
 
   if (error) throw new Error(`Error updating order ${id}: ${error.message}`);
