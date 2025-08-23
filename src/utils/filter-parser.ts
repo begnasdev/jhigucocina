@@ -14,7 +14,7 @@ export type FilterConfig<T> = {
  * @param config A configuration object mapping filter keys to their expected type.
  * @returns A type-safe, partially constructed filter object.
  */
-export function parseFilters<T extends Record<string, any>>(
+export function parseFilters<T extends Record<string, unknown>>(
   searchParams: URLSearchParams,
   config: FilterConfig<T>
 ): Partial<T> {
@@ -24,22 +24,22 @@ export function parseFilters<T extends Record<string, any>>(
     if (searchParams.has(key)) {
       const rawValue = searchParams.get(key)!;
       const parserType = config[key as keyof T];
-      let parsedValue: any;
+      let parsedValue: unknown;
 
       switch (parserType) {
         case "number":
           parsedValue = Number(rawValue);
           // Only add the filter if it's a valid number
-          if (!isNaN(parsedValue)) {
-            filters[key as keyof T] = parsedValue;
+          if (!isNaN(parsedValue as number)) {
+            filters[key as keyof T] = parsedValue as T[keyof T];
           }
           break;
         case "boolean":
-          filters[key as keyof T] = (rawValue === "true") as any;
+          filters[key as keyof T] = (rawValue === "true") as T[keyof T];
           break;
         case "string":
         default:
-          filters[key as keyof T] = rawValue as any;
+          filters[key as keyof T] = rawValue as T[keyof T];
           break;
       }
     }

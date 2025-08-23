@@ -4,7 +4,7 @@ export type ApiResponse<T> = {
   data: T | null;
   message: string;
   status: number;
-  errors?: any;
+  errors?: unknown;
 };
 
 export type Order = Database["public"]["Tables"]["orders"]["Row"];

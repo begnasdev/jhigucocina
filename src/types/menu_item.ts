@@ -5,7 +5,7 @@ export type ApiResponse<T> = {
   data: T | null;
   message: string;
   status: number;
-  errors?: any;
+  errors?: unknown;
 };
 
 export type MenuItem = Database["public"]["Tables"]["menu_items"]["Row"];
