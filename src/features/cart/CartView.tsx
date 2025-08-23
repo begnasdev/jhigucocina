@@ -5,16 +5,45 @@ import { en } from "@/languages/en";
 import { useCartStore } from "@/stores/useCartStore";
 import { Trash2 } from "lucide-react";
 import Image from "next/image";
+import { useCreateOrder } from "@/hooks/mutations/useOrderMutations";
+import { CreateOrder } from "@/schemas/order-schema";
+import { toast } from "sonner";
 
-const CartView = () => {
+type CartViewProps = {
+  restaurantId: string;
+  tableId: string;
+};
+
+function CartView(props: CartViewProps) {
+  const { restaurantId, tableId } = props;
+
   const { items, removeItem, updateQuantity, totalPrice, clearCart } =
     useCartStore();
 
+  const createOrder = useCreateOrder();
+
   const handlePlaceOrder = () => {
-    console.log("Placing order with:", items);
-    // Here we will later call the API to place the order
-    alert("Order placed successfully! (Check console for details)");
-    clearCart();
+    if (items.length === 0) {
+      toast.error("Your cart is empty.");
+      return;
+    }
+
+    const orderItems = items.map((cartItem) => ({
+      item_id: cartItem.item.item_id,
+      quantity: cartItem.quantity,
+      customizations: {}, // Assuming no customizations for now
+    }));
+
+    const newOrder: CreateOrder = {
+      restaurant_id: restaurantId,
+      table_id: tableId,
+      customer_id: null, // Assuming anonymous customer for now
+      special_instructions: null,
+      order_items: orderItems,
+      status: "pending",
+    };
+
+    createOrder.mutate(newOrder);
   };
 
   if (items.length === 0) {
@@ -22,7 +51,7 @@ const CartView = () => {
   }
 
   return (
-    <div className="p-4">
+    <div className="">
       <div className="flex flex-col gap-4">
         {items.map(({ item, quantity }) => (
           <div key={item.item_id} className="flex items-center gap-4">
@@ -72,12 +101,16 @@ const CartView = () => {
           <span>{en.PAGE.TOTAL}</span>
           <span>${totalPrice().toFixed(2)}</span>
         </div>
-        <Button onClick={handlePlaceOrder} className="w-full mt-4">
-          {en.PAGE.PLACE_ORDER}
+        <Button
+          onClick={handlePlaceOrder}
+          className="w-full mt-4"
+          disabled={createOrder.isPending}
+        >
+          {createOrder.isPending ? "Placing Order..." : en.PAGE.PLACE_ORDER}
         </Button>
       </div>
     </div>
   );
-};
+}
 
 export default CartView;

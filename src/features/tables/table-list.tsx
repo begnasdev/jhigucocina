@@ -20,7 +20,7 @@ export default function TableList() {
   const getQrUrl = (tableId: string, restaurantId: string) => {
     if (typeof window !== "undefined") {
       const { protocol, host } = window.location;
-      return `${protocol}//${host}/menu?restaurantId=${restaurantId}&tableId=${tableId}`;
+      return `${protocol}//${host}/menu-order?restaurantId=${restaurantId}&tableId=${tableId}`;
     }
     return "";
   };

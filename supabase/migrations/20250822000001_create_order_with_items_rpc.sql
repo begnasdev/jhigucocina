@@ -44,12 +44,18 @@ BEGIN
   )
   SELECT
     new_order_id, -- Use the ID from the order we just created.
-    (item->>'item_id')::uuid,
-    (item->>'quantity')::integer,
-    (item->>'unit_price')::numeric,
-    (item->>'total_price')::numeric,
-    (item->'customizations')::jsonb
-  FROM jsonb_to_recordset(items_data) AS item;
+    item.item_id,
+    item.quantity,
+    item.unit_price,
+    item.total_price,
+    item.customizations
+  FROM jsonb_to_recordset(items_data) AS item(
+    item_id uuid,
+    quantity integer,
+    unit_price numeric,
+    total_price numeric,
+    customizations jsonb
+  );
 
   -- 3. Fetch and return the complete order with its items.
   --    This uses a subquery to aggregate the items into a JSON array,

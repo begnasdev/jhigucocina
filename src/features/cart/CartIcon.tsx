@@ -5,15 +5,25 @@ import { useCartStore } from "@/stores/useCartStore";
 import { useSheet } from "@/stores/useSheet";
 import CartView from "./CartView";
 import { en } from "@/languages/en";
+import { useSearchParams } from "next/navigation";
 
 const CartIcon = () => {
   const totalItems = useCartStore((state) => state.totalItems());
   const { openSheet } = useSheet();
 
+  const searchParams = useSearchParams();
+  const restaurantId = searchParams.get("restaurantId");
+  const tableId = searchParams.get("tableId");
+
   const handleOpenCart = () => {
     openSheet({
       title: en.PAGE.YOUR_CART,
-      content: <CartView />,
+      content: (
+        <CartView
+          restaurantId={restaurantId as string}
+          tableId={tableId as string}
+        />
+      ),
     });
   };
 

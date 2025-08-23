@@ -1,9 +1,13 @@
 import MenuOrder from "@/features/menu-order/menu-order";
 
-type PageProps = { params: Promise<{ restaurantId: string }> };
+type PageProps = {
+  searchParams: Promise<{ restaurantId: string; tableId: string }>;
+};
 
 async function MenuOrderPage(props: PageProps) {
-  const { restaurantId } = await props.params;
+  const { restaurantId, tableId } = await props.searchParams;
+
+  console.log(restaurantId, tableId);
 
   return <MenuOrder restaurantId={restaurantId} />;
 }
