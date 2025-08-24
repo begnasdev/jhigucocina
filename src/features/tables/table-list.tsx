@@ -20,7 +20,8 @@ export default function TableList() {
   const getQrUrl = (tableId: string, restaurantId: string) => {
     if (typeof window !== "undefined") {
       const { protocol, host } = window.location;
-      return `${protocol}//${host}/menu-order?restaurantId=${restaurantId}&tableId=${tableId}`;
+      return `https://ee19f072e0c0.ngrok-free.app/menu-order?restaurantId=${restaurantId}&tableId=${tableId}`;
+      // return `${protocol}//${host}/menu-order?restaurantId=${restaurantId}&tableId=${tableId}`;
     }
     return "";
   };
@@ -61,7 +62,9 @@ export default function TableList() {
                 className="mt-4 w-full"
                 onClick={() => setSelectedTable(table)}
               >
-                {en.BUTTON.GENERATE_QR_CODE}
+                {table.qr_code_url
+                  ? "Show QR Code"
+                  : en.BUTTON.GENERATE_QR_CODE}
               </Button>
               <Button
                 variant="outline"
