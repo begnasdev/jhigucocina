@@ -57,8 +57,6 @@ export function TableForm({ table, onSuccess, restaurant_id }: TableFormProps) {
   const isSubmitting = createTable.isPending || updateTable.isPending;
 
   const onSubmit = (values: CreateTable) => {
-    console.log("values", values);
-
     const payload = {
       ...values,
       qr_code_url: "http://localhost:3000/tables",

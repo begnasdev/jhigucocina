@@ -7,8 +7,6 @@ type PageProps = {
 async function MenuOrderPage(props: PageProps) {
   const { restaurantId, tableId } = await props.searchParams;
 
-  console.log(restaurantId, tableId);
-
   return <MenuOrder restaurantId={restaurantId} />;
 }
 

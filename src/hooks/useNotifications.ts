@@ -12,46 +12,54 @@ interface UseNotificationsProps {
 }
 
 // Client-side notification functions
-const getUnreadNotificationsClient = async (userId?: string, restaurantId?: string): Promise<Notification[]> => {
+const getUnreadNotificationsClient = async (
+  userId?: string,
+  restaurantId?: string
+): Promise<Notification[]> => {
   const supabase = createClient();
-  
+
   let query = supabase
     .from("notifications")
     .select("*")
     .eq("is_read", false)
     .order("created_at", { ascending: false });
-  
+
   if (userId) {
     query = query.eq("user_id", userId);
   }
-  
+
   if (restaurantId) {
     query = query.eq("restaurant_id", restaurantId);
   }
-  
+
   const { data, error } = await query;
-  
-  if (error) throw new Error(`Error fetching unread notifications: ${error.message}`);
+
+  if (error)
+    throw new Error(`Error fetching unread notifications: ${error.message}`);
   return data || [];
 };
 
-const getNotificationCountsClient = async (userId?: string, restaurantId?: string): Promise<NotificationCounts> => {
+const getNotificationCountsClient = async (
+  userId?: string,
+  restaurantId?: string
+): Promise<NotificationCounts> => {
   const supabase = createClient();
-  
+
   let query = supabase.from("notifications").select("is_read, priority");
-  
+
   if (userId) {
     query = query.eq("user_id", userId);
   }
-  
+
   if (restaurantId) {
     query = query.eq("restaurant_id", restaurantId);
   }
-  
+
   const { data, error } = await query;
-  
-  if (error) throw new Error(`Error fetching notification counts: ${error.message}`);
-  
+
+  if (error)
+    throw new Error(`Error fetching notification counts: ${error.message}`);
+
   const counts: NotificationCounts = {
     total: data?.length || 0,
     unread: 0,
@@ -59,57 +67,62 @@ const getNotificationCountsClient = async (userId?: string, restaurantId?: strin
       low: 0,
       normal: 0,
       high: 0,
-      urgent: 0
-    }
+      urgent: 0,
+    },
   };
-  
-  data?.forEach(notification => {
+
+  data?.forEach((notification) => {
     if (!notification.is_read) {
       counts.unread++;
     }
-    
+
     if (notification.priority) {
       counts.byPriority[notification.priority]++;
     }
   });
-  
+
   return counts;
 };
 
-const markNotificationAsReadClient = async (notificationId: string): Promise<Notification> => {
+const markNotificationAsReadClient = async (
+  notificationId: string
+): Promise<Notification> => {
   const supabase = createClient();
-  
+
   const { data, error } = await supabase
     .from("notifications")
-    .update({ 
-      is_read: true, 
-      read_at: new Date().toISOString() 
+    .update({
+      is_read: true,
+      read_at: new Date().toISOString(),
     })
     .eq("notification_id", notificationId)
     .select()
     .single();
-  
-  if (error) throw new Error(`Error marking notification as read: ${error.message}`);
+
+  if (error)
+    throw new Error(`Error marking notification as read: ${error.message}`);
   return data;
 };
 
 const subscribeToNotifications = (
-  userId?: string, 
+  userId?: string,
   restaurantId?: string,
   onInsert?: (notification: Notification) => void,
   onUpdate?: (notification: Notification) => void
 ) => {
   const supabase = createClient();
-  
+
   // Create a unique channel name to avoid conflicts
-  const channelName = `notifications_${userId || 'all'}_${restaurantId || 'all'}_${Date.now()}`;
-  
+  const channelName = `notifications_${userId || "all"}_${
+    restaurantId || "all"
+  }_${Date.now()}`;
+
   const channel = supabase.channel(channelName);
-  
+
   // Subscribe to INSERT events
   if (userId || restaurantId) {
     // Build filter for specific user/restaurant
-    let filter = '';
+    let filter = "";
     if (userId && restaurantId) {
       filter = `user_id=eq.${userId}`;
     } else if (userId) {
@@ -117,33 +130,31 @@ const subscribeToNotifications = (
     } else if (restaurantId) {
       filter = `restaurant_id=eq.${restaurantId}`;
     }
-    
+
     channel.on(
-      'postgres_changes',
+      "postgres_changes",
       {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'notifications',
-        filter: filter
+        event: "INSERT",
+        schema: "public",
+        table: "notifications",
+        filter: filter,
       },
       (payload) => {
-        console.log('Real-time INSERT:', payload);
         if (onInsert && payload.new) {
           onInsert(payload.new as Notification);
         }
       }
     );
-    
+
     channel.on(
-      'postgres_changes',
+      "postgres_changes",
       {
-        event: 'UPDATE',
-        schema: 'public',
-        table: 'notifications',
-        filter: filter
+        event: "UPDATE",
+        schema: "public",
+        table: "notifications",
+        filter: filter,
       },
       (payload) => {
-        console.log('Real-time UPDATE:', payload);
         if (onUpdate && payload.new) {
           onUpdate(payload.new as Notification);
         }
@@ -152,43 +163,38 @@ const subscribeToNotifications = (
   } else {
     // Subscribe to all notifications if no filters
     channel.on(
-      'postgres_changes',
+      "postgres_changes",
       {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'notifications'
+        event: "INSERT",
+        schema: "public",
+        table: "notifications",
       },
       (payload) => {
-        console.log('Real-time INSERT (all):', payload);
         if (onInsert && payload.new) {
           onInsert(payload.new as Notification);
         }
       }
     );
-    
+
     channel.on(
-      'postgres_changes',
+      "postgres_changes",
       {
-        event: 'UPDATE',
-        schema: 'public',
-        table: 'notifications'
+        event: "UPDATE",
+        schema: "public",
+        table: "notifications",
       },
       (payload) => {
-        console.log('Real-time UPDATE (all):', payload);
         if (onUpdate && payload.new) {
           onUpdate(payload.new as Notification);
         }
       }
     );
   }
-  
+
   // Subscribe to the channel
-  channel.subscribe((status) => {
-    console.log('Notification channel status:', status);
-  });
-  
+  channel.subscribe((status) => {});
+
   return () => {
-    console.log('Unsubscribing from notifications channel');
     supabase.removeChannel(channel);
   };
 };
@@ -196,10 +202,10 @@ const subscribeToNotifications = (
 export function useNotifications({
   userId,
   restaurantId,
-  enabled = true
+  enabled = true,
 }: UseNotificationsProps = {}) {
   const queryClient = useQueryClient();
-  
+
   // Query keys
   const notificationsKey = ["notifications", "unread", userId, restaurantId];
   const countsKey = ["notifications", "counts", userId, restaurantId];
@@ -208,7 +214,7 @@ export function useNotifications({
   const {
     data: notifications = [],
     isLoading,
-    error
+    error,
   } = useQuery({
     queryKey: notificationsKey,
     queryFn: () => getUnreadNotificationsClient(userId, restaurantId),
@@ -216,11 +222,13 @@ export function useNotifications({
   });
 
   // Fetch notification counts
-  const { data: counts = {
-    total: 0,
-    unread: 0,
-    byPriority: { low: 0, normal: 0, high: 0, urgent: 0 }
-  } } = useQuery({
+  const {
+    data: counts = {
+      total: 0,
+      unread: 0,
+      byPriority: { low: 0, normal: 0, high: 0, urgent: 0 },
+    },
+  } = useQuery({
     queryKey: countsKey,
     queryFn: () => getNotificationCountsClient(userId, restaurantId),
     enabled,
@@ -241,23 +249,26 @@ export function useNotifications({
       const supabase = createClient();
       let query = supabase
         .from("notifications")
-        .update({ 
-          is_read: true, 
-          read_at: new Date().toISOString() 
+        .update({
+          is_read: true,
+          read_at: new Date().toISOString(),
         })
         .eq("is_read", false);
-      
+
       if (userId) {
         query = query.eq("user_id", userId);
       }
-      
+
       if (restaurantId) {
         query = query.eq("restaurant_id", restaurantId);
       }
-      
+
       const { error } = await query;
-      
-      if (error) throw new Error(`Error marking all notifications as read: ${error.message}`);
+
+      if (error)
+        throw new Error(
+          `Error marking all notifications as read: ${error.message}`
+        );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: notificationsKey });
@@ -274,10 +285,10 @@ export function useNotifications({
       restaurantId,
       // On new notification
       (notification: Notification) => {
-        queryClient.setQueryData(notificationsKey, (old: Notification[] = []) => [
-          notification,
-          ...old
-        ]);
+        queryClient.setQueryData(
+          notificationsKey,
+          (old: Notification[] = []) => [notification, ...old]
+        );
         queryClient.invalidateQueries({ queryKey: countsKey });
       },
       // On notification update

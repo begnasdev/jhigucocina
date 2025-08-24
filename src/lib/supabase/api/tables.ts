@@ -71,10 +71,6 @@ export async function updateTable(
     data: { user },
   } = await supabase.auth.getUser();
 
-  console.log("Current user ID:", user?.id);
-  console.log("Updating table ID:", tableId);
-  console.log("Update data:", updateData);
-
   // Check if table exists and user has access
   const { data: existingTable, error: checkError } = await supabase
     .from("tables")
@@ -87,8 +83,6 @@ export async function updateTable(
     throw new Error(`Error checking table: ${checkError.message}`);
   }
 
-  console.log("Existing table:", existingTable);
-
   if (!existingTable) {
     throw new Error(`Table with ID ${tableId} not found`);
   }
@@ -97,11 +91,9 @@ export async function updateTable(
   const { data: userRole } = await supabase
     .from("user_roles")
     .select("*")
-    .eq("user_id", user?.id)
-    .eq("restaurant_id", existingTable.restaurant_id)
+    .eq("user_id", user?.id!)
+    .eq("restaurant_id", existingTable.restaurant_id!)
     .maybeSingle();
-
-  console.log("User role:", userRole);
 
   const { data, error } = await supabase
     .from("tables")
@@ -109,8 +101,6 @@ export async function updateTable(
     .eq("table_id", tableId)
     .select()
     .single();
-
-  console.log("Update result - data:", data, "error:", error);
 
   if (error) {
     console.error("Update error:", error);
